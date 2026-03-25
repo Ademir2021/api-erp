@@ -24,14 +24,25 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
+    // @PostMapping("/item")
+    // public ResponseEntity<?> create(@RequestBody ItemDTO itemDTO) {
+    // try {
+    // return (ResponseEntity<?>) itemService.create(itemDTO);
+
+    // } catch (Exception e) {
+    // // throw new ResourceNotFoundException("Item não gravado");
+    // return ResponseEntity.ok().body("Error: " + e);
+    // }
+    // }
+
     @PostMapping("/item")
-    public ResponseEntity<?> create(@RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<List<Item>> create(@RequestBody ItemDTO itemDTO) {
         try {
-            return (ResponseEntity<?>) itemService.create(itemDTO);
+            List<Item> itens = itemService.create(itemDTO);
+            return ResponseEntity.ok(itens);
 
         } catch (Exception e) {
-            // throw new ResourceNotFoundException("Item não gravado");
-            return ResponseEntity.ok().body("Error: " + e);
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -40,14 +51,13 @@ public class ItemController {
         return itemService.list();
     }
 
-     // Endpoint para buscar itens por nome
+    // Endpoint para buscar itens por nome
     @GetMapping("/search_item")
     public List<Item> searchItemsByName(@RequestParam(required = false) String name) {
         return itemService.searchItemsByName(name);
     }
 
-
-    @PutMapping("/item")
+    @PutMapping("/item/{id}")
     public List<Item> update(@RequestBody ItemDTO itemDTO) {
         return itemService.update(itemDTO);
     }
