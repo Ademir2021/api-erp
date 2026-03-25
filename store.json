@@ -1,0 +1,31 @@
+{
+  "person":{
+		"id":1,
+		"addresses":[{"id":1}]
+	},
+	"branch":{"id":1},
+	"user":{"id":1},
+	"discount":3.50,
+	"tSale":0,
+	"tNote":0,
+  "itemsSale": [
+    {
+      "item":{"id":1,"name":""},
+      "amount": 22,
+      "price": 250.80,
+			"tItem":500
+    },
+		 {
+       "item":{"id":2},
+      "amount": 3,
+      "price": 250.90,
+			 "tItem":500
+    },
+		{
+       "item":{"id":3},
+      "amount": 4,
+      "price": 250.90,
+			"tItem":500
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+	"id":1,
+	"createdAt": "2025-07-05T11:42:35.8992",
+	"name":"Maria Luiza de Almeida",
+   "dateOfBirth":"2016-01-01",
+   "gender":"FEMININO",
+   "cpf":"56567898765",
+ "branch":{"id":1},
+ "user":{"id":1},
+   "addresses":[
+      {
+				"id":1,
+        "street":"Rua Paraiba",
+				"number":"1242",
+				"neighbor":"Centro",
+				"complement":"Casa",
+				"zipCode":{"id":2},
+				"person":{"id":1}
+      }
+   ]
+  }
