@@ -1,9 +1,7 @@
 package br.com.centroinfo.api.controllers.itemcontroller;
 
 import br.com.centroinfo.api.dtos.itemDTO.ItemDTO;
-import br.com.centroinfo.api.dtos.personDTO.PersonDTO;
 import br.com.centroinfo.api.entities.items.item.Item;
-import br.com.centroinfo.api.entities.persons.Person;
 import br.com.centroinfo.api.services.item.ItemService;
 
 import java.util.List;
@@ -29,13 +27,17 @@ public class ItemController {
     ItemService itemService;
 
     @PostMapping("/item")
-    public ResponseEntity<List<Item>> create(@RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<?> create(@RequestBody ItemDTO itemDTO) {
         try {
-            List<Item> itens = itemService.create(itemDTO);
-            return ResponseEntity.ok(itens);
+           Item item = itemService.create(itemDTO);
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "Item Registrado com sucesso",
+                    "name", item.getName()));
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Erro ao Registrar Item",
+                    "details", e.getMessage()));
         }
     }
 

@@ -34,12 +34,11 @@ public class ItemService {
         item.setUnitMeasure(itemDTO.getUnitMeasure());
     }
 
-    public List<Item> create(ItemDTO itemDTO) {
+    public Item create(ItemDTO itemDTO) {
         Item item = new Item();
         item.setCreatedAt(LocalDateTime.now());
         mapItemFields(item, itemDTO);
-        itemRepository.save(item);
-        return list();
+       return itemRepository.save(item);
     }
 
     public List<Item> list() {

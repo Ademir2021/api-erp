@@ -47,7 +47,7 @@ public class Item {
     private SubGroup subGroup;
     @ManyToOne
     @JoinColumn(name = "tax_group_id")
-    TaxGroup taxGroup;
+    private TaxGroup taxGroup;
     @ManyToOne
     @JoinColumn(name = "type_item_id")
     private TypeItem typeItem;

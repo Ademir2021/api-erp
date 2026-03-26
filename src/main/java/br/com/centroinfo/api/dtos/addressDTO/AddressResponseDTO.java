@@ -102,7 +102,7 @@ public class AddressResponseDTO {
 
   /** Zipcode */
   @Getter
-  public class ZipcodeResponseDTO {
+  public  class ZipcodeResponseDTO {
     private Long id;
     private String code;
 
