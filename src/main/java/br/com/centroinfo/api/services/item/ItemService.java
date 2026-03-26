@@ -54,14 +54,13 @@ public class ItemService {
         return list();
     }
 
-    public List<Item> update(ItemDTO itemDTO) {
+    public Item  update(ItemDTO itemDTO) {
         Item item = new Item();
         item.setId(itemDTO.getId());
         item.setCreatedAt(itemDTO.getCreatedAt());
         item.setUpdatedAt(LocalDateTime.now());
         mapItemFields(item, itemDTO);
-        itemRepository.save(item);
-        return list();
+     return   itemRepository.save(item);
     }
 
     public List<Item> delete(Long id) {
