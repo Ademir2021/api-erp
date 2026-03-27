@@ -14,6 +14,7 @@ import br.com.centroinfo.api.entities.sales.Sale;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
@@ -60,9 +61,10 @@ public class NotaPdfService {
             // LOGO
             PdfPCell logoCell = new PdfPCell();
             logoCell.setBorder(Rectangle.BOX);
-            // Image logo = Image.getInstance(...);
-            // logo.scaleToFit(60, 60);
-            // logoCell.addElement(logo);
+            InputStream is = getClass().getResourceAsStream("/logo.png");
+            Image logo = Image.getInstance(is.readAllBytes());
+            logo.scaleToFit(60, 60);
+            logoCell.addElement(logo);
             header.addCell(logoCell);
 
             // EMPRESA
@@ -113,16 +115,17 @@ public class NotaPdfService {
 
             Address a = sale.getPerson().getAddress();
             cliente.addCell(cell("Endereço", headerFont));
-            cliente.addCell(cell(a.getStreet() + ", " + a.getNumber(), normalFont));
+            cliente.addCell(cell(a.getStreet() + ", " + a.getNumber() + ", " +
+            a.getZipCode().getCity().getName() + ", " + a.getZipCode().getCity().getState().getAcronym() , normalFont));
 
             document.add(cliente);
 
             // ================= ITENS =================
-            PdfPTable itens = new PdfPTable(new float[] { 4, 1, 2, 2 });
+            PdfPTable itens = new PdfPTable(new float[] { 4, 1, 1, 2, 2 });
             itens.setWidthPercentage(100);
 
             // HEADER
-            Stream.of("Produto", "Qtd", "Unitário", "Total").forEach(h -> {
+            Stream.of("Descrição", "Qtd", "UN" , "Unitário", "Total").forEach(h -> {
                 PdfPCell c = new PdfPCell(new Phrase(h, headerFont));
                 c.setBackgroundColor(new Color(220, 220, 220));
                 c.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -134,6 +137,8 @@ public class NotaPdfService {
                 itens.addCell(cell(item.getItem().getName(), normalFont));
 
                 itens.addCell(centerCell(String.valueOf(item.getAmount())));
+
+                itens.addCell(centerCell(String.valueOf(item.getItem().getUnitMeasure().getName())));
 
                 itens.addCell(rightCell(String.format("R$ %.2f", item.getPrice())));
 
@@ -159,7 +164,7 @@ public class NotaPdfService {
             document.add(totais);
 
             // ================= QR =================
-            Image qr = gerarQRCode("http://localhost/notas/" + sale.getId(), 100, 100);
+            Image qr = gerarQRCode("http://localhost/notas/" + sale.getId() + "/pdf", 100, 100);
             qr.setAlignment(Element.ALIGN_RIGHT);
             document.add(qr);
 
