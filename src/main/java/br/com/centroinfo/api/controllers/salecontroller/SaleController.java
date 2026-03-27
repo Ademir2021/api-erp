@@ -30,7 +30,6 @@ public class SaleController {
             return ResponseEntity.ok().body(Map.of(
                     "message", "Venda Registrada com sucesso",
                     "id", sale.getId()));
-
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
                     "error", "Erro ao Registrar Venda",
