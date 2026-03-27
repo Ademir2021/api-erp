@@ -7,7 +7,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
-// import br.com.centroinfo.api.entities.address.address.Address;
+import br.com.centroinfo.api.entities.address.address.Address;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
 
@@ -16,99 +16,159 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
+
 import org.springframework.stereotype.Service;
-// import java.util.List;
 
 @Service
 public class NotaPdfService {
+
+    private PdfPCell cell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setPadding(5);
+        return cell;
+    }
+
+    private PdfPCell rightCell(String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        return cell;
+    }
+
+    private PdfPCell centerCell(String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        return cell;
+    }
 
     public byte[] gerarPdf(Sale sale) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try {
-            Document document = new Document();
+            Document document = new Document(PageSize.A4, 30, 30, 30, 30);
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            // Logo da empresa
-            // Image logo = Image.getInstance(new
-            // ClassPathResource("static/logo.png").getURL());
-            // logo.scaleToFit(120, 120);
-            // logo.setAlignment(Element.ALIGN_LEFT);
-            // document.add(logo);
+            // FONTES
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
+            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
+            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
 
-            // Título
-            Paragraph title = new Paragraph("Nota de Venda", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18));
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph("Número da Venda: " + sale.getId()));
-            document.add(new Paragraph(
-                    "Data de Emissão: " + sale.getIssueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
-            document.add(new Paragraph("Filial: " + sale.getBranch().getName()));
-            document.add(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber()));
-            document.add(new Paragraph("Vendedor: " + sale.getUser().getUsername()));
-            document.add(new Paragraph("========== Dados do Cliente =========="));
-            document.add(new Paragraph("Cliente: " + sale.getPerson().getName()));
-            document.add(new Paragraph("CPF: " + sale.getPerson().getCpf()));
-            document.add(new Paragraph("Endereço(s) do Cliente: "));
-            // List<Address> addresses = sale.getPerson().getAddress().getPerson().getId()
-            // for (Address address : addresses) {
-            //     document.add(new Paragraph("Endereço: " + address.getStreet()));
-            //     document.add(new Paragraph("Num: " + address.getNumber()));
-            //     document.add(new Paragraph("Bairro: " + address.getNeighborhood()));
-            //     document.add(new Paragraph("Cidade: " + address.getZipCode().getCity().getName()));
-            //     document.add(new Paragraph("CEP: " + address.getZipCode().getCode()));
-            //     document.add(new Paragraph(" "));
-            // }
+            // ================= HEADER =================
+            PdfPTable header = new PdfPTable(new float[] { 1, 3, 2 });
+            header.setWidthPercentage(100);
 
-            // Tabela de Itens
-            PdfPTable table = new PdfPTable(4);
-            table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
-            table.setSpacingAfter(10f);
+            // LOGO
+            PdfPCell logoCell = new PdfPCell();
+            logoCell.setBorder(Rectangle.BOX);
+            // Image logo = Image.getInstance(...);
+            // logo.scaleToFit(60, 60);
+            // logoCell.addElement(logo);
+            header.addCell(logoCell);
 
-            Stream.of("Produto", "Quantidade", "Unitário", "Total")
-                    .forEach(header -> {
-                        PdfPCell cell = new PdfPCell(new Phrase(header));
-                        cell.setBackgroundColor(Color.LIGHT_GRAY);
-                        table.addCell(cell);
-                    });
+            // EMPRESA
+            PdfPCell empresa = new PdfPCell();
+            empresa.addElement(new Paragraph(sale.getBranch().getName(), headerFont));
+            empresa.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj(), normalFont));
+            empresa.addElement(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber(), normalFont));
+            empresa.setBorder(Rectangle.BOX);
+            header.addCell(empresa);
 
+            // TÍTULO
+            PdfPCell titulo = new PdfPCell(new Paragraph("NOTA DE VENDA", titleFont));
+            titulo.setHorizontalAlignment(Element.ALIGN_CENTER);
+            titulo.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            titulo.setBorder(Rectangle.BOX);
+            header.addCell(titulo);
+
+            document.add(header);
+
+            // ================= DADOS VENDA =================
+            PdfPTable venda = new PdfPTable(4);
+            venda.setWidthPercentage(100);
+
+            venda.addCell(cell("Número", headerFont));
+            venda.addCell(cell(String.valueOf(sale.getId()), normalFont));
+
+            venda.addCell(cell("Data", headerFont));
+            venda.addCell(
+                    cell(sale.getIssueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), normalFont));
+
+            venda.addCell(cell("Vendedor", headerFont));
+            venda.addCell(cell(sale.getUser().getUsername(), normalFont));
+
+            venda.addCell(cell("Filial", headerFont));
+            venda.addCell(cell(sale.getBranch().getName(), normalFont));
+
+            document.add(venda);
+
+            // ================= CLIENTE =================
+            PdfPTable cliente = new PdfPTable(2);
+            cliente.setWidthPercentage(100);
+
+            cliente.addCell(cell("Cliente", headerFont));
+            cliente.addCell(cell(sale.getPerson().getName(), normalFont));
+
+            cliente.addCell(cell("CPF", headerFont));
+            cliente.addCell(cell(sale.getPerson().getCpf(), normalFont));
+
+            Address a = sale.getPerson().getAddress();
+            cliente.addCell(cell("Endereço", headerFont));
+            cliente.addCell(cell(a.getStreet() + ", " + a.getNumber(), normalFont));
+
+            document.add(cliente);
+
+            // ================= ITENS =================
+            PdfPTable itens = new PdfPTable(new float[] { 4, 1, 2, 2 });
+            itens.setWidthPercentage(100);
+
+            // HEADER
+            Stream.of("Produto", "Qtd", "Unitário", "Total").forEach(h -> {
+                PdfPCell c = new PdfPCell(new Phrase(h, headerFont));
+                c.setBackgroundColor(new Color(220, 220, 220));
+                c.setHorizontalAlignment(Element.ALIGN_CENTER);
+                itens.addCell(c);
+            });
+
+            // DADOS
             for (ItemSale item : sale.getItemsSale()) {
-                table.addCell(item.getItem().getName());
-                table.addCell(String.valueOf(item.getAmount()));
-                table.addCell(String.format("R$ %.2f", item.getPrice()));
+                itens.addCell(cell(item.getItem().getName(), normalFont));
+
+                itens.addCell(centerCell(String.valueOf(item.getAmount())));
+
+                itens.addCell(rightCell(String.format("R$ %.2f", item.getPrice())));
+
                 double total = item.getAmount() * item.getPrice();
-                table.addCell(String.format("R$ %.2f", total));
+                itens.addCell(rightCell(String.format("R$ %.2f", total)));
             }
 
-            document.add(table);
+            document.add(itens);
 
-            document.add(new Paragraph("Desconto: R$ " + String.format("%.2f", sale.getDiscount())));
-            document.add(new Paragraph("Total da Nota: R$ " + String.format("%.2f", sale.getTotalNote())));
-            document.add(new Paragraph(" "));
+            // ================= TOTAIS =================
+            PdfPTable totais = new PdfPTable(2);
+            totais.setWidthPercentage(40);
+            totais.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-            // Assinatura fictícia
-            document.add(new Paragraph("______________________________"));
-            document.add(new Paragraph("Assinatura do Vendedor"));
+            totais.addCell(cell("Desconto", headerFont));
+            totais.addCell(rightCell(String.format("R$ %.2f", sale.getDiscount())));
 
-            document.add(new Paragraph(" "));
+            totais.addCell(cell("TOTAL", headerFont));
+            PdfPCell totalFinal = rightCell(String.format("R$ %.2f", sale.getTotalNote()));
+            totalFinal.setBackgroundColor(new Color(230, 230, 230));
+            totais.addCell(totalFinal);
 
-            // QR Code com link da nota (exemplo)
-            String notaUrl = "http://localhost/notas/" + sale.getId(); // exemplo
-            Image qrCodeImage = gerarQRCode(notaUrl, 120, 120);
-            if (qrCodeImage != null) {
-                qrCodeImage.setAlignment(Element.ALIGN_RIGHT);
-                document.add(qrCodeImage);
-            }
+            document.add(totais);
 
-            // Rodapé
+            // ================= QR =================
+            Image qr = gerarQRCode("http://localhost/notas/" + sale.getId(), 100, 100);
+            qr.setAlignment(Element.ALIGN_RIGHT);
+            document.add(qr);
+
+            // ================= RODAPÉ =================
             Paragraph rodape = new Paragraph(
-                    "Empresa: " + sale.getBranch().getName()
-                            + " - CNPJ: 00.000.000/0001-00 | www.empresa.com | (11) 99999-9999",
-                    FontFactory.getFont(FontFactory.HELVETICA, 9));
+                    "Documento gerado automaticamente - www.sistema.com",
+                    FontFactory.getFont(FontFactory.HELVETICA, 8));
             rodape.setAlignment(Element.ALIGN_CENTER);
+
             document.add(rodape);
 
             document.close();

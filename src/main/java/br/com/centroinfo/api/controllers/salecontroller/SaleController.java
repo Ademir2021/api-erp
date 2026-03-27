@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.centroinfo.api.dtos.itemDTO.ItemDTO;
 import br.com.centroinfo.api.dtos.saleDTO.SaleDTO;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.services.sale.SaleService;
