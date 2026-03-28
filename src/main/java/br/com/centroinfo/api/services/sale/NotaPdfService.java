@@ -164,7 +164,7 @@ public class NotaPdfService {
             document.add(totais);
 
             // ================= QR =================
-            Image qr = gerarQRCode("http://localhost/notas/" + sale.getId() + "/pdf", 100, 100);
+            Image qr = gerarQRCode("http://localhost/nota/" + sale.getId() + "/pdf", 100, 100);
             qr.setAlignment(Element.ALIGN_RIGHT);
             document.add(qr);
 

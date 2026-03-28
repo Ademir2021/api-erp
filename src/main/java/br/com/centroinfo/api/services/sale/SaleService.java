@@ -8,6 +8,8 @@ import br.com.centroinfo.api.repository.sale.SaleRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,11 @@ public class SaleService {
 
     private Double totalSale = 0.0;
 
-    public Sale createSale(SaleDTO saleDTO) {
+    public Sale createSale(@NotNull SaleDTO saleDTO) {
         Sale sale = new Sale();
         sale.setIssueDate(LocalDateTime.now());
         sale.setPerson(saleDTO.getPerson());
+        sale.setOperationSale(saleDTO.getOperationSale());
         sale.setDiscount(saleDTO.getDiscount());
         sale.setBranch(saleDTO.getBranch());
         sale.setUser(saleDTO.getUser());

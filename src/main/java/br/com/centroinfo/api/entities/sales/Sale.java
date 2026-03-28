@@ -38,6 +38,9 @@ public class Sale {
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
+    @ManyToOne
+    @JoinColumn(name = "operation_sale_id")
+    private OperationSale operationSale;
     @Column(name = "total_sale")
     private Double totalSale;
     @Column(name = "discount")

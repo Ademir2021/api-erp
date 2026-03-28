@@ -51,6 +51,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/address").permitAll()
                         .requestMatchers(HttpMethod.GET, "/zipcodes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/states").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/operations_sale").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
