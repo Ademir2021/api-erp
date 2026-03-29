@@ -61,16 +61,36 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponseDTO(user.getId(), token, user.getLogin(), roles));
     }
 
+    // @PostMapping("/register")
+    // public ResponseEntity<?> register(@RequestBody @Validated RegisterDTO authenticationDTO) {
+    //     if (this.repository.findByLogin(authenticationDTO.login()) != null)
+    //         // throw new ResourceNotFoundException("Usuário já existe");
+    //     return ResponseEntity.badRequest().build();
+    //     String encryptedPassword = new BCryptPasswordEncoder().encode(authenticationDTO.password());
+    //     User newUser = new User(authenticationDTO.login(), encryptedPassword, authenticationDTO.role());
+    //     this.repository.save(newUser);
+    //     return ResponseEntity.ok().build();
+    // }
+
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Validated RegisterDTO authenticationDTO) {
-        if (this.repository.findByLogin(authenticationDTO.login()) != null)
-            // throw new ResourceNotFoundException("Usuário já existe");
+public ResponseEntity<?> register(@RequestBody @Validated RegisterDTO authenticationDTO) {
+    if (this.repository.findByLogin(authenticationDTO.login()) != null) {
         return ResponseEntity.badRequest().build();
-        String encryptedPassword = new BCryptPasswordEncoder().encode(authenticationDTO.password());
-        User newUser = new User(authenticationDTO.login(), encryptedPassword, authenticationDTO.role());
-        this.repository.save(newUser);
-        return ResponseEntity.ok().build();
     }
+
+    String encryptedPassword = new BCryptPasswordEncoder()
+            .encode(authenticationDTO.password());
+
+    User newUser = new User(
+            authenticationDTO.login(),
+            encryptedPassword,
+            authenticationDTO.role()
+    );
+
+    this.repository.save(newUser);
+
+    return ResponseEntity.ok().build();
+}
 
     @GetMapping("/users")
     public List<User> list() {
