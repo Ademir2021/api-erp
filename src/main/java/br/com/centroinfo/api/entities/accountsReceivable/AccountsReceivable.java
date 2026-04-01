@@ -47,6 +47,6 @@ public class AccountsReceivable {
     private BigDecimal discount;
     @Enumerated(EnumType.STRING)
     private PaymentAccountsReceivable type;
-    private Long idTypeOperation;
+    private String idTypeOperation;
     private String descriptionTypeOperation;
 }

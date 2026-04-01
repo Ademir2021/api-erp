@@ -33,7 +33,7 @@ public class AccountsReceivableDTO {
     private BigDecimal interest;
     private BigDecimal discount;
     private PaymentAccountsReceivable type;
-    private Long idTypeOperation;
+    private String idTypeOperation;
     private String descriptionTypeOperation;
 
 }
