@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.centroinfo.api.entities.accountsReceivable.AccountsReceivable;
 import br.com.centroinfo.api.entities.branchs.Branch;
 import br.com.centroinfo.api.entities.persons.Person;
 import br.com.centroinfo.api.entities.users.User;
@@ -30,10 +31,10 @@ public class Sale {
     @Column(name = "issue_date")
     private LocalDateTime issueDate;
     @ManyToOne
-    @JoinColumn(name="branch_id")
+    @JoinColumn(name = "branch_id")
     private Branch branch;
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
     @JoinColumn(name = "person_id")
@@ -49,4 +50,6 @@ public class Sale {
     private Double totalNote;
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<ItemSale> itemsSale;
+    @OneToMany(mappedBy = "sale" , cascade = CascadeType.ALL)
+    private List<AccountsReceivable> accountsReceivable;
 }
