@@ -4,5 +4,6 @@ public enum SituationAccountsReceivable {
     OPEN,
     PAID,
     PENDING,
-    CANCELED
+    CANCELED,
+    CHARGE
 }
