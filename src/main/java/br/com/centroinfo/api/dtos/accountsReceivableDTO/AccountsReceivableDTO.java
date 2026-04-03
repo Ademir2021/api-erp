@@ -35,5 +35,4 @@ public class AccountsReceivableDTO {
     private PaymentAccountsReceivable type;
     private String idTypeOperation;
     private String descriptionTypeOperation;
-
 }

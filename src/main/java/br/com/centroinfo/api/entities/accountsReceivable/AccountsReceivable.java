@@ -7,13 +7,15 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.centroinfo.api.entities.branchs.Branch;
 import br.com.centroinfo.api.entities.persons.Person;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.entities.users.User;
 
-@Entity
 @Table(name = "accounts_receivable")
+@Entity
 @Getter
 @Setter
 public class AccountsReceivable {
@@ -24,15 +26,19 @@ public class AccountsReceivable {
     private LocalDateTime updatedAt;
     @ManyToOne
     @JoinColumn(name = "branch_id")
+    @JsonIgnore
     private Branch branch;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
     @ManyToOne
     @JoinColumn(name = "payer_id")
+    @JsonIgnore
     private Person payer;
     @ManyToOne
     @JoinColumn(name = "sale_id", nullable = true)
+    @JsonIgnore
     private Sale sale;
     private BigDecimal value;
     private BigDecimal receivedValue;

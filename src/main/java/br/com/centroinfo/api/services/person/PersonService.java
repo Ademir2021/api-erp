@@ -103,7 +103,6 @@ public class PersonService {
         address.setId(personDTO.getAddress().getId());
         mapAddressFields(address, personDTO);
         pers.setAddress(address);
-
         return personRepository.save(pers);
     };
 
@@ -111,4 +110,5 @@ public class PersonService {
         personRepository.deleteById(id);
         return list();
     }
+    
 }

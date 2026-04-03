@@ -45,6 +45,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/sales").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/person").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/person").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/account_receivable").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/account_receivable/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/persons").permitAll()
                         .requestMatchers(HttpMethod.GET, "/search_person/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/nota/**").permitAll()
@@ -53,6 +55,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()
                         .requestMatchers(HttpMethod.GET, "/operations_sale").permitAll()
+                          .requestMatchers(HttpMethod.POST, "/teste").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

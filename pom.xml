@@ -106,6 +106,7 @@
 			<artifactId>javase</artifactId>
 			<version>3.5.2</version>
 		</dependency>
+		
 	
    <dependency>
      <groupId>br.com.guiabolso</groupId>
