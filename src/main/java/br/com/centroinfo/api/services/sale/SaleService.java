@@ -92,7 +92,6 @@ public class SaleService {
         sale.setTotalSale(totalSale);
         sale.setTotalNote(totalSale.subtract(sale.getDiscount()));
 
-        // Soma total das contas a receber para comparar com o total da nota
         BigDecimal totalAccountsReceivable = accountsReceivableList.stream()
                 .map(ar -> ar.getValue() != null
                         ? ar.getValue().setScale(2, RoundingMode.HALF_UP)
