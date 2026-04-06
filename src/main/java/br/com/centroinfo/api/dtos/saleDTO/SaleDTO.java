@@ -1,5 +1,6 @@
 package br.com.centroinfo.api.dtos.saleDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import br.com.centroinfo.api.dtos.accountsReceivableDTO.AccountsReceivableDTO;
@@ -15,7 +16,7 @@ public class SaleDTO {
     private User user;
     private Person person;
     private OperationSale operationSale;
-    private Double discount;
+    private BigDecimal discount;
     private List<ItemSaleDTO> itemsSale;
     private List<AccountsReceivableDTO> accountsReceivable;
 }

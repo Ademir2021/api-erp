@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
@@ -142,7 +143,7 @@ public class NotaPdfService {
 
                 itens.addCell(rightCell(String.format("R$ %.2f", item.getPrice())));
 
-                double total = item.getAmount() * item.getPrice();
+                BigDecimal total = item.getAmount().multiply(item.getPrice());
                 itens.addCell(rightCell(String.format("R$ %.2f", total)));
             }
 

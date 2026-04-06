@@ -1,14 +1,16 @@
 package br.com.centroinfo.api.dtos.saleDTO;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 
 @Getter
 public class ItemNotaDTO {
     private Long id;
     private String item;
-    private Integer quantity;
-    private Double unitPrice;
-    private Double total;
+    private BigDecimal quantity = BigDecimal.ZERO;
+    private BigDecimal unitPrice = BigDecimal.ZERO;
+    private BigDecimal total = BigDecimal.ZERO;
     private String barCode;
     private String sector;
     private String marca;
@@ -16,8 +18,8 @@ public class ItemNotaDTO {
     public ItemNotaDTO(
             Long id,
             String item,
-            Integer quantity,
-            Double unitPrice,
+            BigDecimal quantity,
+            BigDecimal unitPrice,
             String barCode,
             String setcor,
             String marca) {
@@ -25,7 +27,7 @@ public class ItemNotaDTO {
         this.item = item;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.total = unitPrice * quantity;
+        this.total = unitPrice.multiply(quantity) != null ? unitPrice.multiply(quantity) : BigDecimal.ZERO;
         this.barCode = barCode;
         this.sector = setcor;
         this.marca = marca;

@@ -6,10 +6,12 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.centroinfo.api.entities.branchs.Branch;
+import br.com.centroinfo.api.entities.cashMovement.CashMovement;
 import br.com.centroinfo.api.entities.persons.Person;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.entities.users.User;
@@ -55,4 +57,7 @@ public class AccountsReceivable {
     private PaymentAccountsReceivable type;
     private String idTypeOperation;
     private String descriptionTypeOperation;
+    @JsonIgnore
+    @OneToMany(mappedBy = "accountsReceivable")
+    private List<CashMovement> movements;
 }

@@ -44,7 +44,7 @@ public class AccountsReceivableResponseDTO {
         this.updatedAt = updatedAt;
         this.branch = new BranchResponseDTO(iB, nB);
         this.user = new UserResponseDTO(iU, nU);
-        this.payer = new PersonResponseDTO(id, nP);
+        this.payer = new PersonResponseDTO(iP, nP);
         this.sale = new SaleResponseDTO(iS);
         this.value = value;
         this.receivedValue = receivedValue;

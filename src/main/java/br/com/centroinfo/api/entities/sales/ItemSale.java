@@ -1,5 +1,7 @@
 package br.com.centroinfo.api.entities.sales;
 
+import java.math.BigDecimal;
+
 import br.com.centroinfo.api.entities.items.item.Item;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +25,10 @@ public class ItemSale {
      @ManyToOne
     @JoinColumn(name = "id_item")
     private Item item;
-    private Integer amount;
-    private Double price;
+    private BigDecimal amount;
+    private BigDecimal price;
     @Column(name = "total_item")
-    private Double totalItem;
+    private BigDecimal totalItem;
     @ManyToOne
     @JoinColumn(name = "id_sale")
     private Sale sale;
