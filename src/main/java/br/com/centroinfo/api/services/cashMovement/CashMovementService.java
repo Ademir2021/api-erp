@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.centroinfo.api.dtos.cashMovementDTO.CashMovementDTO;
-// import br.com.centroinfo.api.entities.accountsReceivable.AccountsReceivable;
-// import br.com.centroinfo.api.entities.accountsReceivable.SituationAccountsReceivable;
 import br.com.centroinfo.api.entities.cashMovement.CashMovement;
 import br.com.centroinfo.api.entities.cashMovement.MovementType;
 import br.com.centroinfo.api.repository.accountsReceivable.AccountsReceivableRepository;
