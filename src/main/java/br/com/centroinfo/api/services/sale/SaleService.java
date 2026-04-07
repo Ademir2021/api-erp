@@ -110,6 +110,7 @@ public class SaleService {
                         BigDecimal lastBalance = totalNote
                                         .subtract(totalAccountsReceivable)
                                         .setScale(2, RoundingMode.HALF_UP);
+
                         CashMovement movement = new CashMovement();
                         movement.setAmount(lastBalance);
                         movement.setMovementType(MovementType.CREDIT);
@@ -120,6 +121,7 @@ public class SaleService {
                                         cashMovementService.getSaldoCaixa().add(lastBalance));
                         cashRepository.save(movement);
                 }
+
                 return saleRepository.save(sale);
         }
 
