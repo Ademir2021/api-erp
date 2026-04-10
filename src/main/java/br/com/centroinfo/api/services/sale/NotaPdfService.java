@@ -70,14 +70,24 @@ public class NotaPdfService {
 
             // EMPRESA
             PdfPCell empresa = new PdfPCell();
+             empresa.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
             empresa.addElement(new Paragraph(sale.getBranch().getName(), headerFont));
-            empresa.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj(), normalFont));
+            empresa.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj() + " " +
+            "Inscrição Estadual: " + sale.getBranch().getInscricState() , normalFont));
             empresa.addElement(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber(), normalFont));
+            empresa.addElement(
+                    new Paragraph("Endereço: " + sale.getBranch().getPerson().getAddress().getStreet() + " " +
+                            sale.getPerson().getAddress().getNumber() + " " +
+                            sale.getPerson().getAddress().getNeighborhood() + "\n" +
+                            sale.getPerson().getAddress().getZipCode().getCity().getName() + " " +
+                            sale.getPerson().getAddress().getZipCode().getCity().getState().getAcronym() +
+                            " CEP: " + sale.getPerson().getAddress().getZipCode().getCode() + "\n\n", normalFont));
             empresa.setBorder(Rectangle.BOX);
             header.addCell(empresa);
 
             // TÍTULO
-            PdfPCell titulo = new PdfPCell(new Paragraph("NOTA DE VENDA", titleFont));
+            PdfPCell titulo = new PdfPCell(new Paragraph(sale.getOperationSale().getDescription() + "\n" +
+                    "Nº: " + String.format("%06d", sale.getId()), titleFont));
             titulo.setHorizontalAlignment(Element.ALIGN_CENTER);
             titulo.setVerticalAlignment(Element.ALIGN_MIDDLE);
             titulo.setBorder(Rectangle.BOX);
@@ -87,26 +97,26 @@ public class NotaPdfService {
             // ================= DADOS VENDA =================
             PdfPTable venda = new PdfPTable(4);
             venda.setWidthPercentage(100);
-            venda.addCell(cell("Número", headerFont));
-            venda.addCell(cell(String.valueOf(sale.getId()), normalFont));
-            venda.addCell(cell("Data", headerFont));
+            venda.addCell(cell("Natureza da Operação: ", headerFont));
+            venda.addCell(cell(sale.getOperationSale().getDefaultNature(), normalFont));
+            venda.addCell(cell("Data da Emissão:", headerFont));
             venda.addCell(
                     cell(sale.getIssueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), normalFont));
-            venda.addCell(cell("Vendedor", headerFont));
+            venda.addCell(cell("Email do Vendedor: ", headerFont));
             venda.addCell(cell(sale.getUser().getUsername(), normalFont));
-            venda.addCell(cell("Filial", headerFont));
-            venda.addCell(cell(sale.getBranch().getName(), normalFont));
+            venda.addCell(cell("Filial: ", headerFont));
+            venda.addCell(cell((String.format("%03d", sale.getBranch().getId())), normalFont));
             document.add(venda);
 
             // ================= CLIENTE =================
             PdfPTable cliente = new PdfPTable(2);
             cliente.setWidthPercentage(100);
-            cliente.addCell(cell("Cliente", headerFont));
+            cliente.addCell(cell("Cliente: ", headerFont));
             cliente.addCell(cell(sale.getPerson().getName(), normalFont));
-            cliente.addCell(cell("CPF", headerFont));
+            cliente.addCell(cell("CPF: ", headerFont));
             cliente.addCell(cell(sale.getPerson().getCpf(), normalFont));
             Address a = sale.getPerson().getAddress();
-            cliente.addCell(cell("Endereço", headerFont));
+            cliente.addCell(cell("Endereço: ", headerFont));
             cliente.addCell(cell(a.getStreet() + ", " + a.getNumber() + ", " +
                     a.getZipCode().getCity().getName() + ", " + a.getZipCode().getCity().getState().getAcronym(),
                     normalFont));
@@ -115,8 +125,11 @@ public class NotaPdfService {
             // ================ FATURAS ===================
             NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
             if (sale.getAccountsReceivable() != null && !sale.getAccountsReceivable().isEmpty()) {
-                Paragraph titleAr = new Paragraph("FATURA", headerFont);
-                titleAr.setAlignment(Element.ALIGN_CENTER); // centralizado (opcional)
+                Paragraph titleAr = new Paragraph(
+                        sale.getOperationSale().getId() == 3 ? "FATURA"
+                                : (sale.getOperationSale().getId() == 2 ? "CARTÃO" : "PIX"),
+                        headerFont);
+                titleAr.setAlignment(Element.ALIGN_LEFT); // centralizado (opcional)
                 titleAr.setSpacingAfter(5); // espaço depois do título
                 document.add(titleAr);
 
@@ -139,7 +152,7 @@ public class NotaPdfService {
 
             // ================= ITENS =================
             Paragraph titleITems = new Paragraph("DADOS DO PRODUTO/SERVIÇO", headerFont);
-            titleITems.setAlignment(Element.ALIGN_CENTER); // centralizado (opcional)
+            titleITems.setAlignment(Element.ALIGN_LEFT); // centralizado (opcional)
             titleITems.setSpacingAfter(5); // espaço depois do título
             document.add(titleITems);
 
