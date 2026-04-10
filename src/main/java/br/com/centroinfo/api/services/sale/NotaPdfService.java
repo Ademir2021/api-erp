@@ -6,19 +6,19 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
-
+import br.com.centroinfo.api.entities.accountsReceivable.AccountsReceivable;
 import br.com.centroinfo.api.entities.address.address.Address;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.stream.Stream;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -82,51 +82,72 @@ public class NotaPdfService {
             titulo.setVerticalAlignment(Element.ALIGN_MIDDLE);
             titulo.setBorder(Rectangle.BOX);
             header.addCell(titulo);
-
             document.add(header);
 
             // ================= DADOS VENDA =================
             PdfPTable venda = new PdfPTable(4);
             venda.setWidthPercentage(100);
-
             venda.addCell(cell("Número", headerFont));
             venda.addCell(cell(String.valueOf(sale.getId()), normalFont));
-
             venda.addCell(cell("Data", headerFont));
             venda.addCell(
                     cell(sale.getIssueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), normalFont));
-
             venda.addCell(cell("Vendedor", headerFont));
             venda.addCell(cell(sale.getUser().getUsername(), normalFont));
-
             venda.addCell(cell("Filial", headerFont));
             venda.addCell(cell(sale.getBranch().getName(), normalFont));
-
             document.add(venda);
 
             // ================= CLIENTE =================
             PdfPTable cliente = new PdfPTable(2);
             cliente.setWidthPercentage(100);
-
             cliente.addCell(cell("Cliente", headerFont));
             cliente.addCell(cell(sale.getPerson().getName(), normalFont));
-
             cliente.addCell(cell("CPF", headerFont));
             cliente.addCell(cell(sale.getPerson().getCpf(), normalFont));
-
             Address a = sale.getPerson().getAddress();
             cliente.addCell(cell("Endereço", headerFont));
             cliente.addCell(cell(a.getStreet() + ", " + a.getNumber() + ", " +
-            a.getZipCode().getCity().getName() + ", " + a.getZipCode().getCity().getState().getAcronym() , normalFont));
-
+                    a.getZipCode().getCity().getName() + ", " + a.getZipCode().getCity().getState().getAcronym(),
+                    normalFont));
             document.add(cliente);
 
+            // ================ FATURAS ===================
+            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            if (sale.getAccountsReceivable() != null && !sale.getAccountsReceivable().isEmpty()) {
+                Paragraph titleAr = new Paragraph("FATURA", headerFont);
+                titleAr.setAlignment(Element.ALIGN_CENTER); // centralizado (opcional)
+                titleAr.setSpacingAfter(5); // espaço depois do título
+                document.add(titleAr);
+
+                PdfPTable contas = new PdfPTable(new float[] { 1, 2, 3 });
+                contas.setWidthPercentage(100);
+                // HEADER
+                Stream.of("Número", "Data Vcto", "Valor").forEach(h -> {
+                    PdfPCell c = new PdfPCell(new Phrase(h, headerFont));
+                    c.setBackgroundColor(new Color(220, 220, 220));
+                    c.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    contas.addCell(c);
+                });
+                for (AccountsReceivable ar : sale.getAccountsReceivable()) {
+                    contas.addCell(centerCell(String.valueOf(ar.getId())));
+                    contas.addCell(centerCell(ar.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
+                    contas.addCell(centerCell(nf.format(ar.getValue())));
+                }
+                document.add(contas);
+            }
+
             // ================= ITENS =================
+            Paragraph titleITems = new Paragraph("DADOS DO PRODUTO/SERVIÇO", headerFont);
+            titleITems.setAlignment(Element.ALIGN_CENTER); // centralizado (opcional)
+            titleITems.setSpacingAfter(5); // espaço depois do título
+            document.add(titleITems);
+
             PdfPTable itens = new PdfPTable(new float[] { 4, 1, 1, 2, 2 });
             itens.setWidthPercentage(100);
 
             // HEADER
-            Stream.of("Descrição", "Qtd", "UN" , "Unitário", "Total").forEach(h -> {
+            Stream.of("DESCRIÇÃO PRODUTO/SERVIÇO", "QTD", "UN", "UNIT", "TOTAL").forEach(h -> {
                 PdfPCell c = new PdfPCell(new Phrase(h, headerFont));
                 c.setBackgroundColor(new Color(220, 220, 220));
                 c.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -136,32 +157,24 @@ public class NotaPdfService {
             // DADOS
             for (ItemSale item : sale.getItemsSale()) {
                 itens.addCell(cell(item.getItem().getName(), normalFont));
-
                 itens.addCell(centerCell(String.valueOf(item.getAmount())));
-
                 itens.addCell(centerCell(String.valueOf(item.getItem().getUnitMeasure().getName())));
-
                 itens.addCell(rightCell(String.format("R$ %.2f", item.getPrice())));
-
                 BigDecimal total = item.getAmount().multiply(item.getPrice());
                 itens.addCell(rightCell(String.format("R$ %.2f", total)));
             }
-
             document.add(itens);
 
             // ================= TOTAIS =================
             PdfPTable totais = new PdfPTable(2);
             totais.setWidthPercentage(40);
             totais.setHorizontalAlignment(Element.ALIGN_RIGHT);
-
             totais.addCell(cell("Desconto", headerFont));
             totais.addCell(rightCell(String.format("R$ %.2f", sale.getDiscount())));
-
             totais.addCell(cell("TOTAL", headerFont));
             PdfPCell totalFinal = rightCell(String.format("R$ %.2f", sale.getTotalNote()));
             totalFinal.setBackgroundColor(new Color(230, 230, 230));
             totais.addCell(totalFinal);
-
             document.add(totais);
 
             // ================= QR =================
@@ -169,9 +182,22 @@ public class NotaPdfService {
             qr.setAlignment(Element.ALIGN_RIGHT);
             document.add(qr);
 
+            String documentoPessoa = sale.getPerson().getCpf() != null
+                    ? sale.getPerson().getCpf()
+                    : (sale.getPerson().getCnpj() != null ? sale.getPerson().getCnpj() : "");
+
+            String texto = "________________________\n"
+                    + sale.getPerson().getName() + "\n"
+                    + documentoPessoa;
+
+            Paragraph assinatura = new Paragraph(texto, headerFont);
+            assinatura.setAlignment(Element.ALIGN_LEFT);
+            assinatura.setSpacingAfter(10);
+            document.add(assinatura);
+
             // ================= RODAPÉ =================
             Paragraph rodape = new Paragraph(
-                    "Documento gerado automaticamente - www.sistema.com",
+                    "Documento gerado automaticamente - pelo ERP da Empresa, em http://localhost",
                     FontFactory.getFont(FontFactory.HELVETICA, 8));
             rodape.setAlignment(Element.ALIGN_CENTER);
 
