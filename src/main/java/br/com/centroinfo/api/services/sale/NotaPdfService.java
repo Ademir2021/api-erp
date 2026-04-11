@@ -30,14 +30,14 @@ public class NotaPdfService {
         return cell;
     }
 
-    private PdfPCell rightCell(String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text));
+    private PdfPCell rightCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         return cell;
     }
 
-    private PdfPCell centerCell(String text) {
-        PdfPCell cell = new PdfPCell(new Phrase(text));
+    private PdfPCell centerCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         return cell;
     }
@@ -70,10 +70,10 @@ public class NotaPdfService {
 
             // EMPRESA
             PdfPCell empresa = new PdfPCell();
-             empresa.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
+            empresa.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
             empresa.addElement(new Paragraph(sale.getBranch().getName(), headerFont));
             empresa.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj() + " " +
-            "Inscrição Estadual: " + sale.getBranch().getInscricState() , normalFont));
+                    "Inscrição Estadual: " + sale.getBranch().getInscricState(), normalFont));
             empresa.addElement(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber(), normalFont));
             empresa.addElement(
                     new Paragraph("Endereço: " + sale.getBranch().getPerson().getAddress().getStreet() + " " +
@@ -85,13 +85,18 @@ public class NotaPdfService {
             empresa.setBorder(Rectangle.BOX);
             header.addCell(empresa);
 
-            // TÍTULO
-            PdfPCell titulo = new PdfPCell(new Paragraph(sale.getOperationSale().getDescription() + "\n" +
-                    "Nº: " + String.format("%06d", sale.getId()), titleFont));
-            titulo.setHorizontalAlignment(Element.ALIGN_CENTER);
-            titulo.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            titulo.setBorder(Rectangle.BOX);
-            header.addCell(titulo);
+            // TITULO
+            Paragraph p = new Paragraph();
+            p.add(new Chunk(sale.getOperationSale().getDescription() + "\n", titleFont));
+            p.add(new Chunk("Nº: " + String.format("%06d", sale.getId()) + "\n\n", titleFont));
+            p.add(new Chunk("CFOP: " + sale.getOperationSale().getCfop(), normalFont));
+            p.setAlignment(Element.ALIGN_CENTER);
+            PdfPCell cell = new PdfPCell(p);
+            cell.setBorder(Rectangle.BOX);
+            cell.setLeading(0f, 1.4f);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            header.addCell(cell);
             document.add(header);
 
             // ================= DADOS VENDA =================
@@ -143,9 +148,10 @@ public class NotaPdfService {
                     contas.addCell(c);
                 });
                 for (AccountsReceivable ar : sale.getAccountsReceivable()) {
-                    contas.addCell(centerCell(String.valueOf(ar.getId())));
-                    contas.addCell(centerCell(ar.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
-                    contas.addCell(centerCell(nf.format(ar.getValue())));
+                    contas.addCell(centerCell(String.valueOf(ar.getId()), normalFont));
+                    contas.addCell(centerCell(ar.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                            normalFont));
+                    contas.addCell(centerCell(nf.format(ar.getValue()), normalFont));
                 }
                 document.add(contas);
             }
@@ -170,11 +176,11 @@ public class NotaPdfService {
             // DADOS
             for (ItemSale item : sale.getItemsSale()) {
                 itens.addCell(cell(item.getItem().getName(), normalFont));
-                itens.addCell(centerCell(String.valueOf(item.getAmount())));
-                itens.addCell(centerCell(String.valueOf(item.getItem().getUnitMeasure().getName())));
-                itens.addCell(rightCell(String.format("R$ %.2f", item.getPrice())));
+                itens.addCell(centerCell(String.valueOf(item.getAmount()), normalFont));
+                itens.addCell(centerCell(String.valueOf(item.getItem().getUnitMeasure().getName()), normalFont));
+                itens.addCell(rightCell(String.format("R$ %.2f", item.getPrice()), normalFont));
                 BigDecimal total = item.getAmount().multiply(item.getPrice());
-                itens.addCell(rightCell(String.format("R$ %.2f", total)));
+                itens.addCell(rightCell(String.format("R$ %.2f", total), normalFont));
             }
             document.add(itens);
 
@@ -183,9 +189,9 @@ public class NotaPdfService {
             totais.setWidthPercentage(40);
             totais.setHorizontalAlignment(Element.ALIGN_RIGHT);
             totais.addCell(cell("Desconto", headerFont));
-            totais.addCell(rightCell(String.format("R$ %.2f", sale.getDiscount())));
+            totais.addCell(rightCell(String.format("R$ %.2f", sale.getDiscount()), normalFont));
             totais.addCell(cell("TOTAL", headerFont));
-            PdfPCell totalFinal = rightCell(String.format("R$ %.2f", sale.getTotalNote()));
+            PdfPCell totalFinal = rightCell(String.format("R$ %.2f", sale.getTotalNote()), normalFont);
             totalFinal.setBackgroundColor(new Color(230, 230, 230));
             totais.addCell(totalFinal);
             document.add(totais);
