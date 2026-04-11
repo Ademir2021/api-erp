@@ -23,6 +23,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NotaPdfService {
+    private Image gerarQRCode(String text, int width, int height) {
+        try {
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix matrix = writer.encode(text, BarcodeFormat.QR_CODE, width, height);
+            BufferedImage image = MatrixToImageWriter.toBufferedImage(matrix);
+            return Image.getInstance(image, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     private PdfPCell cell(String text, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
@@ -44,21 +55,17 @@ public class NotaPdfService {
 
     public byte[] gerarPdf(Sale sale) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
         try {
             Document document = new Document(PageSize.A4, 30, 30, 30, 30);
             PdfWriter.getInstance(document, outputStream);
             document.open();
-
             // FONTES
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
             Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
-
             // ================= HEADER =================
             PdfPTable header = new PdfPTable(new float[] { 1, 3, 2 });
             header.setWidthPercentage(100);
-
             // LOGO
             PdfPCell logoCell = new PdfPCell();
             logoCell.setBorder(Rectangle.BOX);
@@ -67,7 +74,6 @@ public class NotaPdfService {
             logo.scaleToFit(60, 60);
             logoCell.addElement(logo);
             header.addCell(logoCell);
-
             // EMPRESA
             PdfPCell empresa = new PdfPCell();
             empresa.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
@@ -84,7 +90,6 @@ public class NotaPdfService {
                             " CEP: " + sale.getPerson().getAddress().getZipCode().getCode() + "\n\n", normalFont));
             empresa.setBorder(Rectangle.BOX);
             header.addCell(empresa);
-
             // TITULO
             Paragraph p = new Paragraph();
             p.add(new Chunk(sale.getOperationSale().getDescription() + "\n", titleFont));
@@ -98,7 +103,6 @@ public class NotaPdfService {
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             header.addCell(cell);
             document.add(header);
-
             // ================= DADOS VENDA =================
             PdfPTable venda = new PdfPTable(4);
             venda.setWidthPercentage(100);
@@ -112,7 +116,6 @@ public class NotaPdfService {
             venda.addCell(cell("Filial: ", headerFont));
             venda.addCell(cell((String.format("%03d", sale.getBranch().getId())), normalFont));
             document.add(venda);
-
             // ================= CLIENTE =================
             PdfPTable cliente = new PdfPTable(2);
             cliente.setWidthPercentage(100);
@@ -126,7 +129,6 @@ public class NotaPdfService {
                     a.getZipCode().getCity().getName() + ", " + a.getZipCode().getCity().getState().getAcronym(),
                     normalFont));
             document.add(cliente);
-
             // ================ FATURAS ===================
             NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
             if (sale.getAccountsReceivable() != null && !sale.getAccountsReceivable().isEmpty()) {
@@ -134,10 +136,9 @@ public class NotaPdfService {
                         sale.getOperationSale().getId() == 3 ? "FATURA"
                                 : (sale.getOperationSale().getId() == 2 ? "CARTÃO" : "PIX"),
                         headerFont);
-                titleAr.setAlignment(Element.ALIGN_LEFT); // centralizado (opcional)
-                titleAr.setSpacingAfter(5); // espaço depois do título
+                titleAr.setAlignment(Element.ALIGN_LEFT);
+                titleAr.setSpacingAfter(5);
                 document.add(titleAr);
-
                 PdfPTable contas = new PdfPTable(new float[] { 1, 2, 3 });
                 contas.setWidthPercentage(100);
                 // HEADER
@@ -155,16 +156,13 @@ public class NotaPdfService {
                 }
                 document.add(contas);
             }
-
             // ================= ITENS =================
             Paragraph titleITems = new Paragraph("DADOS DO PRODUTO/SERVIÇO", headerFont);
             titleITems.setAlignment(Element.ALIGN_LEFT); // centralizado (opcional)
             titleITems.setSpacingAfter(5); // espaço depois do título
             document.add(titleITems);
-
             PdfPTable itens = new PdfPTable(new float[] { 4, 1, 1, 2, 2 });
             itens.setWidthPercentage(100);
-
             // HEADER
             Stream.of("DESCRIÇÃO PRODUTO/SERVIÇO", "QTD", "UN", "UNIT", "TOTAL").forEach(h -> {
                 PdfPCell c = new PdfPCell(new Phrase(h, headerFont));
@@ -172,7 +170,6 @@ public class NotaPdfService {
                 c.setHorizontalAlignment(Element.ALIGN_CENTER);
                 itens.addCell(c);
             });
-
             // DADOS
             for (ItemSale item : sale.getItemsSale()) {
                 itens.addCell(cell(item.getItem().getName(), normalFont));
@@ -183,7 +180,6 @@ public class NotaPdfService {
                 itens.addCell(rightCell(String.format("R$ %.2f", total), normalFont));
             }
             document.add(itens);
-
             // ================= TOTAIS =================
             PdfPTable totais = new PdfPTable(2);
             totais.setWidthPercentage(40);
@@ -195,49 +191,30 @@ public class NotaPdfService {
             totalFinal.setBackgroundColor(new Color(230, 230, 230));
             totais.addCell(totalFinal);
             document.add(totais);
-
             // ================= QR =================
             Image qr = gerarQRCode("http://localhost/nota/" + sale.getId() + "/pdf", 100, 100);
             qr.setAlignment(Element.ALIGN_RIGHT);
             document.add(qr);
-
             String documentoPessoa = sale.getPerson().getCpf() != null
                     ? sale.getPerson().getCpf()
                     : (sale.getPerson().getCnpj() != null ? sale.getPerson().getCnpj() : "");
-
             String texto = "________________________\n"
                     + sale.getPerson().getName() + "\n"
                     + documentoPessoa;
-
             Paragraph assinatura = new Paragraph(texto, headerFont);
             assinatura.setAlignment(Element.ALIGN_LEFT);
             assinatura.setSpacingAfter(10);
             document.add(assinatura);
-
             // ================= RODAPÉ =================
             Paragraph rodape = new Paragraph(
                     "Documento gerado automaticamente - pelo ERP da Empresa, em http://localhost",
                     FontFactory.getFont(FontFactory.HELVETICA, 8));
             rodape.setAlignment(Element.ALIGN_CENTER);
-
             document.add(rodape);
-
             document.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return outputStream.toByteArray();
-    }
-
-    private Image gerarQRCode(String text, int width, int height) {
-        try {
-            QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix matrix = writer.encode(text, BarcodeFormat.QR_CODE, width, height);
-            BufferedImage image = MatrixToImageWriter.toBufferedImage(matrix);
-            return Image.getInstance(image, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
