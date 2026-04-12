@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import br.com.centroinfo.api.entities.accountsReceivable.AccountsReceivable;
 import br.com.centroinfo.api.entities.branchs.Branch;
 import br.com.centroinfo.api.entities.persons.Person;
@@ -52,6 +51,6 @@ public class Sale {
     private BigDecimal totalNote;
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<ItemSale> itemsSale;
-    @OneToMany(mappedBy = "sale" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<AccountsReceivable> accountsReceivable;
 }

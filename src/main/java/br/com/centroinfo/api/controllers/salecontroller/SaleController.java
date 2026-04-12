@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.centroinfo.api.dtos.saleDTO.SaleDTO;
+import br.com.centroinfo.api.dtos.saleDTO.SaleResponseDTO;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.services.sale.SaleService;
 
@@ -37,8 +38,8 @@ public class SaleController {
     }
 
     @GetMapping("/sales")
-    public List<Sale> listSale() {
-        return saleService.listSale();
+    public List<SaleResponseDTO> listAllSale() {
+        return saleService.listAllSale();
     }
 
 }

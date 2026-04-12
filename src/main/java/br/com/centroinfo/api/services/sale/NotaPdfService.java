@@ -75,21 +75,22 @@ public class NotaPdfService {
             logoCell.addElement(logo);
             header.addCell(logoCell);
             // EMPRESA
-            PdfPCell empresa = new PdfPCell();
-            empresa.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
-            empresa.addElement(new Paragraph(sale.getBranch().getName(), headerFont));
-            empresa.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj() + " " +
+            PdfPCell e = new PdfPCell();
+            e.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
+            e.addElement(new Paragraph(sale.getBranch().getName(), headerFont));
+            e.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj() + " " +
                     "Inscrição Estadual: " + sale.getBranch().getInscricState(), normalFont));
-            empresa.addElement(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber(), normalFont));
-            empresa.addElement(
+            e.addElement(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber(), normalFont));
+            e.addElement(
                     new Paragraph("Endereço: " + sale.getBranch().getPerson().getAddress().getStreet() + " " +
-                            sale.getPerson().getAddress().getNumber() + " " +
-                            sale.getPerson().getAddress().getNeighborhood() + "\n" +
-                            sale.getPerson().getAddress().getZipCode().getCity().getName() + " " +
-                            sale.getPerson().getAddress().getZipCode().getCity().getState().getAcronym() +
-                            " CEP: " + sale.getPerson().getAddress().getZipCode().getCode() + "\n\n", normalFont));
-            empresa.setBorder(Rectangle.BOX);
-            header.addCell(empresa);
+                            sale.getBranch().getPerson().getAddress().getNumber() + " " +
+                            sale.getBranch().getPerson().getAddress().getNeighborhood() + "\n" +
+                            sale.getBranch().getPerson().getAddress().getZipCode().getCity().getName() + " " +
+                            sale.getBranch().getPerson().getAddress().getZipCode().getCity().getState().getAcronym() +
+                            " CEP: " + sale.getBranch().getPerson().getAddress().getZipCode().getCode() + "\n\n",
+                            normalFont));
+            e.setBorder(Rectangle.BOX);
+            header.addCell(e);
             // TITULO
             Paragraph p = new Paragraph();
             p.add(new Chunk(sale.getOperationSale().getDescription() + "\n", titleFont));
@@ -104,18 +105,18 @@ public class NotaPdfService {
             header.addCell(cell);
             document.add(header);
             // ================= DADOS VENDA =================
-            PdfPTable venda = new PdfPTable(4);
-            venda.setWidthPercentage(100);
-            venda.addCell(cell("Natureza da Operação: ", headerFont));
-            venda.addCell(cell(sale.getOperationSale().getDefaultNature(), normalFont));
-            venda.addCell(cell("Data da Emissão:", headerFont));
-            venda.addCell(
+            PdfPTable v = new PdfPTable(4);
+            v.setWidthPercentage(100);
+            v.addCell(cell("Natureza da Operação: ", headerFont));
+            v.addCell(cell(sale.getOperationSale().getDefaultNature(), normalFont));
+            v.addCell(cell("Data da Emissão:", headerFont));
+            v.addCell(
                     cell(sale.getIssueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), normalFont));
-            venda.addCell(cell("Email do Vendedor: ", headerFont));
-            venda.addCell(cell(sale.getUser().getUsername(), normalFont));
-            venda.addCell(cell("Filial: ", headerFont));
-            venda.addCell(cell((String.format("%03d", sale.getBranch().getId())), normalFont));
-            document.add(venda);
+            v.addCell(cell("Email do Vendedor: ", headerFont));
+            v.addCell(cell(sale.getUser().getUsername(), normalFont));
+            v.addCell(cell("Filial: ", headerFont));
+            v.addCell(cell((String.format("%03d", sale.getBranch().getId())), normalFont));
+            document.add(v);
             // ================= CLIENTE =================
             PdfPTable cliente = new PdfPTable(2);
             cliente.setWidthPercentage(100);

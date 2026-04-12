@@ -2,6 +2,7 @@ package br.com.centroinfo.api.services.sale;
 
 import br.com.centroinfo.api.dtos.saleDTO.ItemSaleDTO;
 import br.com.centroinfo.api.dtos.saleDTO.SaleDTO;
+import br.com.centroinfo.api.dtos.saleDTO.SaleResponseDTO;
 import br.com.centroinfo.api.entities.accountsReceivable.AccountsReceivable;
 import br.com.centroinfo.api.entities.cashMovement.CashMovement;
 import br.com.centroinfo.api.entities.cashMovement.MovementType;
@@ -125,8 +126,8 @@ public class SaleService {
                 return saleRepository.save(sale);
         }
 
-        public List<Sale> listSale() {
-                return saleRepository.findAll();
+        public List<SaleResponseDTO> listAllSale() {
+                return saleRepository.listAllSales();
         }
 
 }

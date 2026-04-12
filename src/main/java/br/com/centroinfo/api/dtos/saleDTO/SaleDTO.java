@@ -9,8 +9,10 @@ import br.com.centroinfo.api.entities.persons.Person;
 import br.com.centroinfo.api.entities.sales.OperationSale;
 import br.com.centroinfo.api.entities.users.User;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class SaleDTO {
     private Branch branch;
     private User user;

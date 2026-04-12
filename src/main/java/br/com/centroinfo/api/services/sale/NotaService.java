@@ -2,16 +2,21 @@ package br.com.centroinfo.api.services.sale;
 
 import br.com.centroinfo.api.dtos.saleDTO.ItemNotaDTO;
 import br.com.centroinfo.api.dtos.saleDTO.NotaDTO;
+import br.com.centroinfo.api.dtos.saleDTO.SaleResponseDTO;
 import br.com.centroinfo.api.entities.sales.Sale;
-
+import br.com.centroinfo.api.repository.sale.SaleRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotaService {
-    
+
+    @Autowired
+    SaleRepository saleRepository;
+
     public NotaDTO gerarNota(Sale sale) {
         List<ItemNotaDTO> itemDTOs = sale.getItemsSale().stream().map(item -> {
             Long id = item.getItem().getId();
@@ -34,8 +39,11 @@ public class NotaService {
                 itemDTOs,
                 sale.getTotalSale(),
                 sale.getDiscount(),
-                sale.getTotalNote()
-        );
-    }
-}
+                sale.getTotalNote());
+    };
 
+    public List<SaleResponseDTO> listAllSales(){
+        return saleRepository.listAllSales();
+    }
+
+}

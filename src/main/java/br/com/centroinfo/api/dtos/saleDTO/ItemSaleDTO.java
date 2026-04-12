@@ -9,5 +9,5 @@ import lombok.Getter;
 public class ItemSaleDTO {
     private Item item;
     private BigDecimal amount = BigDecimal.ZERO;
-    private BigDecimal price = BigDecimal.ZERO;
+    private BigDecimal price = BigDecimal.ZERO;     
 }
