@@ -32,14 +32,20 @@ public class PersonController {
         return personService.save(personDTO);
     }
 
-    @GetMapping("/persons")
-    public List<PersonResponseDTO> list() {
-        return personService.list();
-    }
+    // @GetMapping("/persons")
+    // public List<PersonResponseDTO> list() {
+    //     return personService.list();
+    // }
 
     @GetMapping("/search_person")
     public List<PersonResponseDTO> searchPersons(@RequestParam String name) {
         return personService.getPersonsByName(name);
+    }
+
+    // Ex:http://localhost:8080/persons?userId=1 ou http://localhost:8080
+    @GetMapping("/persons")
+    public List<PersonResponseDTO> listAllPersonsByUsers(@RequestParam(required = false) Long userId) {
+        return personService.listAllPersonsByUsers(userId);
     }
 
     @PutMapping("/person/{id}")

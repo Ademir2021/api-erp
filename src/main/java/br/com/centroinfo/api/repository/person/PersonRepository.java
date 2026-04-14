@@ -41,4 +41,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query(PERSON_RESPONSE_QUERY + " ORDER BY p.id")
     List<PersonResponseDTO> findPersonsAll();
+
+    @Query(PERSON_RESPONSE_QUERY + " WHERE (:userId IS NULL OR u.id = :userId)")
+    List<PersonResponseDTO> listAllPersonsByUsers(@Param("userId") Long userId);
 }

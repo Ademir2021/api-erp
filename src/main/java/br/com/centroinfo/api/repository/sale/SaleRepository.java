@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import br.com.centroinfo.api.dtos.saleDTO.SaleResponseDTO;
 import br.com.centroinfo.api.entities.sales.Sale;
@@ -36,6 +37,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                 JOIN s.user u
                 JOIN s.person p
                 JOIN s.operationSale op
+                 WHERE (:userId IS NULL OR u.id = :userId)
             """)
-    List<SaleResponseDTO> listAllSales();
+    List<SaleResponseDTO> listAllSalesByUsers(@Param("userId") Long userId);
 }

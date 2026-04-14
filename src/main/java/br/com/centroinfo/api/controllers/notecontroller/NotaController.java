@@ -1,7 +1,5 @@
 package br.com.centroinfo.api.controllers.notecontroller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.centroinfo.api.dtos.saleDTO.NotaDTO;
-import br.com.centroinfo.api.dtos.saleDTO.SaleResponseDTO;
 import br.com.centroinfo.api.providers.ResourceNotFoundException;
 import br.com.centroinfo.api.repository.sale.SaleRepository;
 import br.com.centroinfo.api.services.sale.NotaService;
@@ -34,13 +31,4 @@ public class NotaController {
                 // .orElse(ResponseEntity.notFound().build());
                 .orElseThrow(() -> new ResourceNotFoundException("Nota com ID " + saleId + " não encontrado"));
     };
-
-    @GetMapping("/notas")
-    public ResponseEntity<List<SaleResponseDTO>> listarSales() {
-        List<SaleResponseDTO> notas = notaService.listAllSales();
-        if (notas.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(notas);
-    }
 }

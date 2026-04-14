@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.centroinfo.api.dtos.saleDTO.SaleDTO;
@@ -37,9 +38,10 @@ public class SaleController {
         }
     }
 
+    // Ex:http://localhost:8080/sales?userId=1 ou http://localhost:8080
     @GetMapping("/sales")
-    public List<SaleResponseDTO> listAllSale() {
-        return saleService.listAllSale();
+    public List<SaleResponseDTO> listAllSalesByUsers(@RequestParam(required = false) Long userId) {
+        return saleService.listAllSalesByUsers(userId);
     }
 
 }

@@ -2,7 +2,6 @@ package br.com.centroinfo.api.services.sale;
 
 import br.com.centroinfo.api.dtos.saleDTO.ItemNotaDTO;
 import br.com.centroinfo.api.dtos.saleDTO.NotaDTO;
-import br.com.centroinfo.api.dtos.saleDTO.SaleResponseDTO;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.repository.sale.SaleRepository;
 import java.math.BigDecimal;
@@ -41,9 +40,5 @@ public class NotaService {
                 sale.getDiscount(),
                 sale.getTotalNote());
     };
-
-    public List<SaleResponseDTO> listAllSales(){
-        return saleRepository.listAllSales();
-    }
 
 }

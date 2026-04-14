@@ -126,8 +126,8 @@ public class SaleService {
                 return saleRepository.save(sale);
         }
 
-        public List<SaleResponseDTO> listAllSale() {
-                return saleRepository.listAllSales();
+        public List<SaleResponseDTO> listAllSalesByUsers(Long id) {
+                return saleRepository.listAllSalesByUsers(id);
         }
 
 }

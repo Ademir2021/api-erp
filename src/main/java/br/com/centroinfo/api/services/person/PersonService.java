@@ -83,6 +83,12 @@ public class PersonService {
         return personRepository.findPersonsByName(name);
     }
 
+    public List<PersonResponseDTO> listAllPersonsByUsers(Long id){
+        return personRepository.listAllPersonsByUsers(id);
+    }
+
+
+
     /**
      * @param personDTO
      * @return
