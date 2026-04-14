@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.centroinfo.api.dtos.accountsReceivableDTO.AccountsReceivableDTO;
 import br.com.centroinfo.api.dtos.accountsReceivableDTO.AccountsReceivableResponseDTO;
@@ -39,8 +40,20 @@ public class AccountsReceivableController {
         }
     }
 
+    @GetMapping("/accounts_receivable_all")
+    List<AccountsReceivableResponseDTO> findAccountsReceivableAll() {
+        return accountsReceivableServices.findAccountsReceivableAll();
+    }
+
+    @GetMapping("/accounts_receivable_id")
+    List<AccountsReceivableResponseDTO> findAccountsReceivableById(
+            @RequestParam(required = false) Long arId) {
+        return accountsReceivableServices.findAccountsReceivableById(arId);
+    }
+
     @GetMapping("/accounts_receivable")
-    List<AccountsReceivableResponseDTO> list() {
-        return accountsReceivableServices.list();
+    public List<AccountsReceivableResponseDTO> findAllAccountsReceivableByUser(
+            @RequestParam(required = false) Long userId) {
+        return accountsReceivableServices.findAllAccountsReceivableByUser(userId);
     }
 }

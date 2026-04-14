@@ -101,8 +101,16 @@ public class AccountsReceivableServices {
         return accountsReceivableRepository.save(ar);
     }
 
-    public List<AccountsReceivableResponseDTO> list() {
-        return accountsReceivableRepository.findAccountsReceivable();
+    public List<AccountsReceivableResponseDTO> findAccountsReceivableAll() {
+        return accountsReceivableRepository.findAccountsReceivableAll();
+    }
+
+    public List<AccountsReceivableResponseDTO> findAccountsReceivableById(Long arId) {
+        return accountsReceivableRepository.findAccountsReceivableById(arId);
+    }
+
+    public List<AccountsReceivableResponseDTO> findAllAccountsReceivableByUser(Long userId) {
+        return accountsReceivableRepository.findAllAccountsReceivableByUser(userId);
     }
 
 }
