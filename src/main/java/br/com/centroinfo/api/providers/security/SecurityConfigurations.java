@@ -26,7 +26,7 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // Pemite requisições do tipo tems/search_name?name=mouse
+                        //Obs.: Pemite requisições do tipo items/search_name?name=mouse
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
@@ -55,7 +55,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()
                         .requestMatchers(HttpMethod.GET, "/operations_sale").permitAll()
-                          .requestMatchers(HttpMethod.POST, "/teste").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/teste").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/cash/list").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/cash").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
