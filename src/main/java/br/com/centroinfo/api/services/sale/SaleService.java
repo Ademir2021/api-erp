@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,20 +108,25 @@ public class SaleService {
                                 ? sale.getTotalNote().setScale(2, RoundingMode.HALF_UP)
                                 : BigDecimal.ZERO;
 
-                if (totalAccountsReceivable.compareTo(totalNote) < 0) {
-                        BigDecimal lastBalance = totalNote
-                                        .subtract(totalAccountsReceivable)
-                                        .setScale(2, RoundingMode.HALF_UP);
+                final Long op = saleDTO.getOperationSale().getId();
+                Set<Long> opsValidas = Set.of(1L, 2L, 3L);
 
-                        CashMovement movement = new CashMovement();
-                        movement.setAmount(lastBalance);
-                        movement.setMovementType(MovementType.CREDIT);
-                        nextNumber = saleRepository.count();
-                        movement.setDescription("Venda - Nº:" + (nextNumber != 0 ? nextNumber + 1 : 1));
-                        movement.setAccountsReceivable(null);
-                        movement.setBalanceAfter(
-                                        cashMovementService.getSaldoCaixa().add(lastBalance));
-                        cashRepository.save(movement);
+                if (opsValidas.contains(op)) {
+                        if (totalAccountsReceivable.compareTo(totalNote) < 0) {
+                                BigDecimal lastBalance = totalNote
+                                                .subtract(totalAccountsReceivable)
+                                                .setScale(2, RoundingMode.HALF_UP);
+
+                                CashMovement movement = new CashMovement();
+                                movement.setAmount(lastBalance);
+                                movement.setMovementType(MovementType.CREDIT);
+                                nextNumber = saleRepository.count();
+                                movement.setDescription("Venda - Nº:" + (nextNumber != 0 ? nextNumber + 1 : 1));
+                                movement.setAccountsReceivable(null);
+                                movement.setBalanceAfter(
+                                                cashMovementService.getSaldoCaixa().add(lastBalance));
+                                cashRepository.save(movement);
+                        }
                 }
 
                 return saleRepository.save(sale);

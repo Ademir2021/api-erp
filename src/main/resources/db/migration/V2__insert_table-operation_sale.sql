@@ -1,0 +1,7 @@
+insert into "operation_sale" ("active", "allow_discount", "cfop", "controls_stock", "default_nature", "description", "generate_financial", "id", "is_final_consumer", "is_return", "requires_invoice", "type", "update_cost") values (true, true, '5102', true, 'Venda de Mercadoria', 'Venda Normal', true, '1', true, false, true, 'saida', true);
+insert into "operation_sale" ("active", "allow_discount", "cfop", "controls_stock", "default_nature", "description", "generate_financial", "id", "is_final_consumer", "is_return", "requires_invoice", "type", "update_cost") values (true, false, '5102', true, 'Venda de Mercadoria', 'Venda com Cartão de Crédito', true, '2', true, false, true, 'saida', true);
+insert into "operation_sale" ("active", "allow_discount", "cfop", "controls_stock", "default_nature", "description", "generate_financial", "id", "is_final_consumer", "is_return", "requires_invoice", "type", "update_cost") values (true, true, '5102', true, 'Venda de Mercadoria', 'Venda a Prazo', true, '3', true, false, true, 'saida', true);
+
+-- Insert para definir Orçamento
+insert into "operation_sale" ("active", "allow_discount", "cfop", "controls_stock", "default_nature", "description", "generate_financial", "id", "is_final_consumer", "is_return", "requires_invoice", "type", "update_cost")
+                      values (true, true, 'null', true, 'Orcamento', 'Orcamento de Venda', false, 4, true, false, true, 'saida', false);
