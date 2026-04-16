@@ -1,0 +1,27 @@
+-- INSERT INTO brands VALUES (1, 'Century');
+UPDATE brands SET name = 'NULL' where id = 1
+INSERT INTO brands VALUES (5, 'Century');
+INSERT INTO brands VALUES (6, 'Pisc');
+INSERT INTO brands VALUES (7, 'Mercusys');
+INSERT INTO brands VALUES (8, 'Aquario');
+INSERT INTO brands VALUES (9, 'TWG');
+INSERT INTO brands VALUES (10, 'Intelbras');
+INSERT INTO brands VALUES (11, 'Vinik');
+INSERT INTO brands VALUES (12, 'BrasForma');
+INSERT INTO brands VALUES (13, 'RagTech');
+INSERT INTO brands VALUES (14, 'Vanxum');
+INSERT INTO brands VALUES (15, 'MXT');
+INSERT INTO brands VALUES (16, 'Hoopson');
+INSERT INTO brands VALUES (17, 'C3Tech');
+INSERT INTO brands VALUES (18, 'Pro Eletronics');
+INSERT INTO brands VALUES (19, 'Philips');
+INSERT INTO brands VALUES (20, 'Samsung');
+INSERT INTO brands VALUES (21, 'LG');
+INSERT INTO brands VALUES (22, 'Motorola');
+INSERT INTO brands VALUES (23, 'GigaSat');
+INSERT INTO brands VALUES (24, 'AOC');
+INSERT INTO brands VALUES (25, 'Lenovo');
+INSERT INTO brands VALUES (26, 'Acer');
+INSERT INTO brands VALUES (27, 'Hayom');
+INSERT INTO brands VALUES (28, 'Bright');
+INSERT INTO brands VALUES (29, 'TBlack');
