@@ -3,6 +3,8 @@ package br.com.centroinfo.api.services.item;
 import br.com.centroinfo.api.dtos.itemDTO.ItemDTO;
 import br.com.centroinfo.api.entities.items.item.Item;
 import br.com.centroinfo.api.repository.item.ItemRepository;
+import jakarta.transaction.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class ItemService {
 
     @Autowired
