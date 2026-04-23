@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Table(name = "state")
+@Table(name = "states")
 @Entity
 @Getter
 @Setter
