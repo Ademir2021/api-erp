@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import br.com.centroinfo.api.dtos.brandDTO.BrandDTO;
 import br.com.centroinfo.api.entities.items.brand.Brand;
 import br.com.centroinfo.api.repository.brand.BrandRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class BrandService {
 
     @Autowired

@@ -15,23 +15,25 @@ public class SubGroupService {
     @Autowired
     private SubGroupRepository subGroupRepository;
 
-    public List<SubGroup> create(SubGroupDTO subGroupDTO) {
+    public SubGroup create(SubGroupDTO subGroupDTO) {
         SubGroup subGroup = new SubGroup();
-        subGroup.setName(subGroupDTO.name);
+        subGroup.setName(subGroupDTO.getName());
+        subGroup.setGroup(subGroupDTO.getGroup());
         subGroupRepository.save(subGroup);
-        return list();
+        return subGroup;
     }
 
     public List<SubGroup> list() {
         return subGroupRepository.findAll();
     }
 
-    public List<SubGroup> update(SubGroupDTO subGroupDTO) {
+    public SubGroup update(SubGroupDTO subGroupDTO) {
         SubGroup subGroup = new SubGroup();
-        subGroup.setId(subGroupDTO.id);
-        subGroup.setName(subGroupDTO.name);
+        subGroup.setId(subGroupDTO.getId());
+        subGroup.setName(subGroupDTO.getName());
+        subGroup.setGroup(subGroupDTO.getGroup());
         subGroupRepository.save(subGroup);
-        return list();
+        return subGroup;
     }
 
     public List<SubGroup> delete(Long id) {

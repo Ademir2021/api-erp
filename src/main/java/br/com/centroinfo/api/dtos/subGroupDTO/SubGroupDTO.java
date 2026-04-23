@@ -1,9 +1,13 @@
 package br.com.centroinfo.api.dtos.subGroupDTO;
 
 import br.com.centroinfo.api.entities.items.group.Group;
+import lombok.Getter;
+import lombok.Setter;
 
-public class SubGroupDTO {
-public Long id;
-public String name;
-public Group group;
+@Getter
+@Setter
+ public class SubGroupDTO {
+ Long id;
+ String name;
+ Group group;
 }
