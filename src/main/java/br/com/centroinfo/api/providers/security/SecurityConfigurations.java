@@ -26,7 +26,7 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        //Obs.: Pemite requisições do tipo items/search_name?name=mouse
+                        // Obs.: Pemite requisições do tipo items/search_name?name=mouse
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
@@ -42,6 +42,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/group").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/item").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/item").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/itemclasses").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/itemclasse").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/itemclasse").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/items").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/search_item/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/sale").hasRole("USER")
@@ -55,6 +58,10 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/search_person/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/nota/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/address").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/countrys").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/country").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/country").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/zipcodes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/zipcodes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()
                         .requestMatchers(HttpMethod.GET, "/states").permitAll()

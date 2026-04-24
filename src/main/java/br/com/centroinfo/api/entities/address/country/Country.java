@@ -2,6 +2,8 @@ package br.com.centroinfo.api.entities.address.country;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.centroinfo.api.entities.address.city.City;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,6 +32,7 @@ public class Country { // Pais
     private String codeCountry;
     @Column(name = "code_revenue")
     private String codeRevenue; // codigo da receita federal do país
+    @JsonIgnore
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
     private List<City> cities;
 }
