@@ -1,8 +1,7 @@
-package br.com.centroinfo.api.controllers.typeItemcontroller;
+package br.com.centroinfo.api.controllers.cityController;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,52 +11,51 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
-import br.com.centroinfo.api.dtos.typeItemDTO.TypeItemDTO;
-import br.com.centroinfo.api.entities.items.typeItem.TypeItem;
-import br.com.centroinfo.api.services.typeItem.TypeItemServices;
+import br.com.centroinfo.api.dtos.cityDTO.CityDTO;
+import br.com.centroinfo.api.entities.address.city.City;
+import br.com.centroinfo.api.services.city.CityServices;
 
 @RestController
 @RequestMapping("")
-public class TypeItemController {
+public class CityController {
 
     @Autowired
-    private TypeItemServices typeItemServices;
+    CityServices cityServices;
 
-    @PostMapping("/typeitem")
-    public ResponseEntity<?> create(@RequestBody TypeItemDTO typeItemDTO) {
+    @PostMapping("/city")
+    public ResponseEntity<?> create(@RequestBody CityDTO cityDTO) {
         try {
-            TypeItem typeItem = typeItemServices.create(typeItemDTO);
+            City city = cityServices.create(cityDTO);
             return ResponseEntity.ok().body(Map.of(
-                    "message", "Tipo de Item Registrado com sucesso",
-                    "name", typeItem.getName()));
+                    "message", "Cidade Registrada com sucesso",
+                    "name", city.getName()));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Erro ao Registrar Tipo de ITem",
+                    "error", "Erro ao Registrar Cidade",
                     "details", e.getMessage()));
         }
     }
 
-    @GetMapping("/typeitems")
-    public List<TypeItem> list() {
-        return typeItemServices.list();
+    @GetMapping("/citys")
+    List<City> list() {
+        return cityServices.list();
     }
 
-    @PutMapping("/typeitem/{id}")
+    @PutMapping("/city/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
-            @RequestBody TypeItemDTO typeItemDTO) {
-        typeItemDTO.setId(id);
+            @RequestBody CityDTO cityDTO) {
+        cityDTO.setId(id);
         try {
-            TypeItem typeItem = typeItemServices.update(typeItemDTO);
+            City city = cityServices.update(cityDTO);
             return ResponseEntity.ok().body(Map.of(
-                    "message", "Tipo de Item atualizado com sucesso",
-                    "id", typeItem.getId()));
+                    "message", "Cidade atualizada com sucesso",
+                    "id", city.getId()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Erro ao atualizar Tipo de Item",
+                    "error", "Erro ao atualizar Cidade",
                     "details", e.getMessage()));
         }
     }
-
 }

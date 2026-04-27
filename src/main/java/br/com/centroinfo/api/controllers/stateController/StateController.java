@@ -1,4 +1,4 @@
-package br.com.centroinfo.api.controllers.zipcodecontroller;
+package br.com.centroinfo.api.controllers.stateController;
 
 import java.util.List;
 import java.util.Map;
@@ -12,57 +12,53 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.centroinfo.api.dtos.zipcodeDTO.ZipcodeDTO;
-import br.com.centroinfo.api.entities.address.zipcode.ZipCode;
-import br.com.centroinfo.api.services.zipcode.ZipcodeService;
+
+import br.com.centroinfo.api.dtos.stateDTO.StateDTO;
+import br.com.centroinfo.api.entities.address.state.State;
+import br.com.centroinfo.api.services.state.StateServices;
 
 @RestController
 @RequestMapping("")
-public class ZipcodeController {
+public class StateController {
 
     @Autowired
-    private ZipcodeService zipcodeService;
+    StateServices stateServices;
 
-    // public ZipcodeController(ZipcodeService zipcodeService){
-    //     this.zipcodeService = zipcodeService;
-    // }
-
-  @PostMapping("/zipcode")
-    public ResponseEntity<?> create(@RequestBody ZipcodeDTO zipcodeDTO) {
+    @PostMapping("/state")
+    public ResponseEntity<?> create(@RequestBody StateDTO itemDTO) {
         try {
-            ZipCode zipCode = zipcodeService.create(zipcodeDTO);
+            State brand = stateServices.create(itemDTO);
             return ResponseEntity.ok().body(Map.of(
-                    "message", "CEP Registrado com sucesso",
-                    "name", zipCode.getCode()));
+                    "message", "Estado Registrado com sucesso",
+                    "name", brand.getName()));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Erro ao Registrar CEP",
+                    "error", "Erro ao Registrar Estado",
                     "details", e.getMessage()));
         }
     }
 
-    @GetMapping("/zipcodes")
-    public List<ZipCode> list() {
-        return zipcodeService.list();
+    @GetMapping("/states")
+   public List<State> list() {
+        return stateServices.list();
     }
 
-     @PutMapping("/zipcode/{id}")
+    @PutMapping("/state/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
-            @RequestBody ZipcodeDTO zipCodeDTO) {
-        zipCodeDTO.setId(id);
+            @RequestBody StateDTO stateDTO) {
+        stateDTO.setId(id);
         try {
-            ZipCode brand = zipcodeService.update(zipCodeDTO);
+            State brand = stateServices.update(stateDTO);
             return ResponseEntity.ok().body(Map.of(
-                    "message", "CEP atualizado com sucesso",
+                    "message", "Estado atualizado com sucesso",
                     "id", brand.getId()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Erro ao atualizar CEP",
+                    "error", "Erro ao atualizar Estado",
                     "details", e.getMessage()));
         }
     }
-
 
 }
