@@ -1,4 +1,4 @@
-package br.com.centroinfo.api.repository.operationSaleDTO;
+package br.com.centroinfo.api.repository.operationSale;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

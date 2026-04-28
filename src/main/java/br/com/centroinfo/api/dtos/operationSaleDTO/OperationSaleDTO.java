@@ -13,6 +13,7 @@ public class OperationSaleDTO {
     private Boolean generateFinancial;
     private Boolean allowDiscount;
     private Boolean updateCost;
+    private Boolean finalConsumer;
     private Boolean requiresInvoice;
     private Boolean isReturn;
     private String cfop;

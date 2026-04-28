@@ -32,10 +32,6 @@ public class PersonController {
         return personService.save(personDTO);
     }
 
-    // @GetMapping("/persons")
-    // public List<PersonResponseDTO> list() {
-    //     return personService.list();
-    // }
 
     @GetMapping("/search_person")
     public List<PersonResponseDTO> searchPersons(@RequestParam String name) {
