@@ -6,6 +6,7 @@ import br.com.centroinfo.api.repository.item.ItemRepository;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -41,7 +42,7 @@ public class ItemService {
         Item item = new Item();
         item.setCreatedAt(LocalDateTime.now());
         mapItemFields(item, itemDTO);
-       return itemRepository.save(item);
+        return itemRepository.save(item);
     }
 
     public List<Item> list() {
@@ -49,20 +50,37 @@ public class ItemService {
     }
 
     // Método para buscar itens por nome ou codigo de barras
-    public List<Item> searchItems(String name) {
-        if (name != null && !name.isEmpty()) {
-            return itemRepository.searchByNameOrBarcode(name);
+    // public List<Item> searchItems(String name) {
+    // if (name != null && !name.isEmpty()) {
+    // return itemRepository.searchByNameOrBarcode(name);
+    // }
+    // return list();
+    // }
+
+     // Método para buscar itens por nome, codigo de barras ou id
+    public List<Item> searchItems(String term) {
+        if (term == null || term.trim().isEmpty()) {
+            return List.of();
+        };
+        term = term.trim();
+        // Se for número, tenta buscar por ID também
+        if (term.matches("\\d+")) {
+            Long id = Long.valueOf(term);
+            List<Item> result = new ArrayList<>();
+            result.addAll(itemRepository.searchById(id));
+            result.addAll(itemRepository.searchByNameOrBarcode(term));
+            return result;
         }
-        return list();
+        return itemRepository.searchByNameOrBarcode(term);
     }
 
-    public Item  update(ItemDTO itemDTO) {
+    public Item update(ItemDTO itemDTO) {
         Item item = new Item();
         item.setId(itemDTO.getId());
         item.setCreatedAt(itemDTO.getCreatedAt());
         item.setUpdatedAt(LocalDateTime.now());
         mapItemFields(item, itemDTO);
-     return   itemRepository.save(item);
+        return itemRepository.save(item);
     }
 
     public List<Item> delete(Long id) {
