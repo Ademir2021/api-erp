@@ -10,38 +10,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import br.com.centroinfo.api.repository.sale.SaleRepository;
-import br.com.centroinfo.api.services.sale.NotaPdfService;
+import br.com.centroinfo.api.services.sale.NotaCupomService;
 
 import org.springframework.http.MediaType;
 
 @RestController
-@RequestMapping("")
-public class NotaPdfController {
+@RequestMapping("/cupom")
+public class NotaCupomController {
 
-    private final SaleRepository saleRepository;
-    private final NotaPdfService notaPdfService;
+    private final  SaleRepository saleRepository;
+    private final  NotaCupomService notaCupomService;
 
-    public NotaPdfController(SaleRepository saleRepository, NotaPdfService notaPdfService) {
+    public NotaCupomController(SaleRepository saleRepository, NotaCupomService notaCupomService) {
         this.saleRepository = saleRepository;
-        this.notaPdfService = notaPdfService;
+        this.notaCupomService = notaCupomService;
     }
 
-    @GetMapping("/nota/{saleId}/pdf")
+    @GetMapping("/{saleId}/pdf")
     public Object baixarNotaPdf(@PathVariable Long saleId) {
         return saleRepository.findById(saleId)
                 .map(sale -> {
-                     byte[] pdf = notaPdfService.gerarPdf(sale);
+                    byte[] pdf = notaCupomService.gerarCupom(sale);
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_PDF);
-                    headers.setContentDispositionFormData("attachment", "nota_" + saleId + ".pdf");
+                    headers.setContentDispositionFormData("attachment", "cupom_" + saleId + ".pdf");
                     return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
 }
-
-

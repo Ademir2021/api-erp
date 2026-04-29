@@ -69,6 +69,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/accounts_receivable/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/search_person/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/nota/**").permitAll()
+                         .requestMatchers(HttpMethod.GET, "/cupom/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/address").permitAll()
                         .requestMatchers(HttpMethod.GET, "/countrys").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/country").hasRole("ADMIN")
