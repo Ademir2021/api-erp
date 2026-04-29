@@ -19,19 +19,19 @@ sales-api/
 ├── src/
 │   └── main/
 │       ├── java/com/example/salesapi/
-│       │   ├── controller/salecontroller
-│       │   │              └── SaleController.java
-│       │   ├── dto/saleDTO
-│       │   │       ├── SaleDTO.java
-│       │   │       └── ItemSaleDTO.java
-│       │   ├── entity/sale
-│       │   │          ├── Sale.java
-│       │   │          └── ItemSale.java
-│       │   ├── repository/sale
-│       │   │              ├── SaleRepository.java
-│       │   │              └── ItemSaleRepository.java
-│       │   └── service/sale
-│       │               └── SaleService.java
+│       │   ├── controller/
+│       │   │   └── SaleController.java
+│       │   ├── dto/
+│       │   │   ├── SaleDTO.java
+│       │   │   └── ItemSaleDTO.java
+│       │   ├── entity/
+│       │   │   ├── Sale.java
+│       │   │   └── ItemSale.java
+│       │   ├── repository/
+│       │   │   ├── SaleRepository.java
+│       │   │   └── ItemSaleRepository.java
+│       │   └── service/
+│       │       └── SaleService.java
 │       └── resources/
 │           └── application.properties
 └── pom.xml

@@ -48,10 +48,10 @@ public class ItemService {
         return itemRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 
-    // Método para buscar itens por nome
-    public List<Item> searchItemsByName(String name) {
+    // Método para buscar itens por nome ou codigo de barras
+    public List<Item> searchItems(String name) {
         if (name != null && !name.isEmpty()) {
-            return itemRepository.findByNameContainingIgnoreCase(name);
+            return itemRepository.searchByNameOrBarcode(name);
         }
         return list();
     }

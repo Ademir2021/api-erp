@@ -46,10 +46,10 @@ public class ItemController {
         return itemService.list();
     }
 
-    // Endpoint para buscar itens por nome
+    // Endpoint para buscar itens por nome, barCode ou todos
     @GetMapping("/search_item")
-    public List<Item> searchItemsByName(@RequestParam(required = false) String name) {
-        return itemService.searchItemsByName(name);
+    public List<Item> searchItems(@RequestParam(required = false) String name) {
+        return itemService.searchItems(name);
     }
 
     @PutMapping("/item/{id}")
