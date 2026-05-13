@@ -132,7 +132,7 @@ public class NotaCupomService {
                 IDPay = sale.getAccountsReceivable().get(0).getIdTypeOperation();
             }
             String tipoPagamento = sale.getOperationSale().getId() == 3 ? "FATURA: " + IDPay
-                    : sale.getOperationSale().getId() == 2 ? "CARTÃO - ID:" + IDPay : "PIX: " + IDPay;
+                    : sale.getOperationSale().getId() == 2 ? "CARTÃO - ID:" + IDPay : "A VÍSTA: " + IDPay;
             document.add(new Paragraph("\nPagamento: " + tipoPagamento, normalFont));
             document.add(new Paragraph(line));
 
