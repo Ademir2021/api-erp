@@ -125,10 +125,7 @@ public class NotaCupomService {
             document.add(total);
 
             // ================= PAGAMENTO =================
-            // String IDPay = sale.getAccountsReceivable().get(0).getIdTypeOperation();
-
             String IDPay = "";
-
             if (sale.getAccountsReceivable() != null &&
                     !sale.getAccountsReceivable().isEmpty() &&
                     sale.getAccountsReceivable().get(0) != null) {
@@ -159,7 +156,7 @@ public class NotaCupomService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Erro: " + e);
+            // System.out.println("Erro: " + e);
         }
 
         return outputStream.toByteArray();
