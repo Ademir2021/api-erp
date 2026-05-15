@@ -69,13 +69,13 @@ public class NotaCupomService {
             empresa.add(new Chunk(sale.getBranch().getFantasyName() + "\n", headerFont));
             empresa.add(new Chunk("CNPJ:" + sale.getBranch().getCnpj() +
             " IE:" + sale.getBranch().getInscricState() + "\n", normalFont));
-            empresa.add(new Chunk("Tel: " + sale.getBranch().getPhoneNumber() + "\n", normalFont));
             empresa.add(new Chunk(sale.getBranch().getPerson().getAddress().getStreet() + " "
-                    + sale.getBranch().getPerson().getAddress().getNumber() + " "
-                    + sale.getBranch().getPerson().getAddress().getNeighborhood() + "\n"
-                    + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getName() + " "
-                    + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getState().getAcronym() + "\n",
-                    normalFont));
+            + sale.getBranch().getPerson().getAddress().getNumber() + " "
+            + sale.getBranch().getPerson().getAddress().getNeighborhood() + "\n"
+            + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getName() + " "
+            + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getState().getAcronym() + "\n",
+            normalFont));
+            empresa.add(new Chunk("Tel: " + sale.getBranch().getPhoneNumber() + "\n", normalFont));
             empresa.add(new Chunk(line));
             document.add(empresa);
 
