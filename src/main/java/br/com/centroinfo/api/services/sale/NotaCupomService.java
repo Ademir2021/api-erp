@@ -68,7 +68,7 @@ public class NotaCupomService {
 
             empresa.add(new Chunk(sale.getBranch().getFantasyName() + "\n", headerFont));
             empresa.add(new Chunk("CNPJ:" + sale.getBranch().getCnpj() +
-            " Inscric Estadual:" + sale.getBranch().getInscricState() + "\n", normalFont));
+            " IE:" + sale.getBranch().getInscricState() + "\n", normalFont));
             empresa.add(new Chunk("Tel: " + sale.getBranch().getPhoneNumber() + "\n", normalFont));
             empresa.add(new Chunk(sale.getBranch().getPerson().getAddress().getStreet() + " "
                     + sale.getBranch().getPerson().getAddress().getNumber() + " "
