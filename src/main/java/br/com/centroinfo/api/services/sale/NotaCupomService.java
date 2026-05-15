@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
@@ -21,9 +19,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
-
 import java.awt.image.BufferedImage;
-
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
 
@@ -45,34 +41,34 @@ public class NotaCupomService {
     public byte[] gerarCupom(Sale sale) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        int quantidadeItens = sale.getItemsSale().size();
-        float altura = 500f + (quantidadeItens * 26f);
-        float largura = 226f;
-        // System.out.println("Altura: " + altura);
-
+        int qtdItems = sale.getItemsSale().size();
+        float alt = 500f + (qtdItems * 26f);
+        float larg = 226f;
+     
         try {
-            // 📏 Tamanho tipo bobina 80mm
-            Rectangle pageSize = new Rectangle(largura, altura);
+            //Tamanho tipo bobina 80mm
+            Rectangle pageSize = new Rectangle(larg, alt);
             Document document = new Document(pageSize, 10, 10, 10, 10);
 
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            // 🔤 Fontes
+            //Fontes
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
             Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
 
             NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
-            // ================ LINES ==================
-            String line = "---------------------------------------------";
+            //LINE
+            String line = "\n";
 
-            // ================= HEADER =================
+            // HEADER
             Paragraph empresa = new Paragraph();
             empresa.setAlignment(Element.ALIGN_CENTER);
 
             empresa.add(new Chunk(sale.getBranch().getFantasyName() + "\n", headerFont));
-            empresa.add(new Chunk("CNPJ: " + sale.getBranch().getCnpj() + "\n", normalFont));
+            empresa.add(new Chunk("CNPJ:" + sale.getBranch().getCnpj() +
+            " Inscric Estadual:" + sale.getBranch().getInscricState() + "\n", normalFont));
             empresa.add(new Chunk("Tel: " + sale.getBranch().getPhoneNumber() + "\n", normalFont));
             empresa.add(new Chunk(sale.getBranch().getPerson().getAddress().getStreet() + " "
                     + sale.getBranch().getPerson().getAddress().getNumber() + " "
@@ -80,10 +76,10 @@ public class NotaCupomService {
                     + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getName() + " "
                     + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getState().getAcronym() + "\n",
                     normalFont));
-            empresa.add(new Chunk(line + "\n"));
+            empresa.add(new Chunk(line));
             document.add(empresa);
 
-            // ================= VENDA =================
+            //VENDA
             document.add(new Paragraph("CUPOM NÃO FISCAL", headerFont));
             document.add(new Paragraph("Venda Nº: " + String.format("%06d", sale.getId()), normalFont));
             document.add(new Paragraph(
@@ -93,7 +89,7 @@ public class NotaCupomService {
 
             document.add(new Paragraph(line));
 
-            // ================= CLIENTE =================
+            //CLIENTE 
             if (sale.getPerson() != null) {
                 document.add(new Paragraph("Cliente: " + sale.getPerson().getName(), normalFont));
 
@@ -104,7 +100,7 @@ public class NotaCupomService {
 
             document.add(new Paragraph(line));
 
-            // ================= ITENS =================
+            //ITENS 
             for (ItemSale item : sale.getItemsSale()) {
                 BigDecimal total = item.getAmount().multiply(item.getPrice());
                 document.add(new Paragraph(item.getItem().getName(), normalFont));
@@ -117,14 +113,14 @@ public class NotaCupomService {
 
             document.add(new Paragraph(line));
 
-            // ================= TOTAIS =================
+            // TOTAIS
             document.add(new Paragraph("Desconto: " + nf.format(sale.getDiscount()), normalFont));
 
             Paragraph total = new Paragraph("TOTAL: " + nf.format(sale.getTotalNote()), headerFont);
             total.setAlignment(Element.ALIGN_RIGHT);
             document.add(total);
 
-            // ================= PAGAMENTO =================
+            //PAGAMENTO
             String IDPay = "";
             if (sale.getAccountsReceivable() != null &&
                     !sale.getAccountsReceivable().isEmpty() &&
@@ -136,16 +132,16 @@ public class NotaCupomService {
             document.add(new Paragraph("\nPagamento: " + tipoPagamento, normalFont));
             document.add(new Paragraph(line));
 
-            // ================= QR CODE =================
+            //QR CODE
             Image qr = gerarQRCode("http://localhost/cupom/" + sale.getId() + "/pdf", 80, 80);
             if (qr != null) {
                 qr.setAlignment(Element.ALIGN_CENTER);
                 document.add(qr);
             }
 
-            document.add(new Paragraph("\n" + line));
+            document.add(new Paragraph(line));
 
-            // ================= RODAPÉ =================
+            //RODAPÉ
             Paragraph rodape = new Paragraph(
                     "CUPOM NÃO FISCAL\nObrigado pela preferência!",
                     normalFont);
@@ -153,12 +149,10 @@ public class NotaCupomService {
             rodape.setAlignment(Element.ALIGN_CENTER);
             document.add(rodape);
             document.close();
-
         } catch (Exception e) {
             e.printStackTrace();
-            // System.out.println("Erro: " + e);
+            System.out.println("Erro: " + e);
         }
-
         return outputStream.toByteArray();
     }
 
