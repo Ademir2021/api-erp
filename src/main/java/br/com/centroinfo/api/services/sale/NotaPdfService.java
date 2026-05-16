@@ -57,7 +57,15 @@ public class NotaPdfService {
 
     public byte[] gerarPdf(Sale sale) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
         try {
+
+            // Soma o contas a Receber
+            BigDecimal sumContas = BigDecimal.ZERO;
+            for (AccountsReceivable conta : sale.getAccountsReceivable()) {
+                sumContas = sumContas.add(conta.getValue());
+            }
+
             Document document = new Document(PageSize.A4, 30, 30, 30, 30);
             PdfWriter.getInstance(document, outputStream);
             document.open();
@@ -204,6 +212,17 @@ public class NotaPdfService {
                     : (sale.getPerson().getCnpj() != null
                             ? FormatHelper.formatCnpj(sale.getPerson().getCnpj())
                             : "");
+
+            Paragraph obs = new Paragraph("Observações:\n", headerFont);
+            document.add(obs);
+            BigDecimal inCash = sale.getTotalNote().subtract(sumContas);
+            Paragraph payCash = new Paragraph("Em Dinheiro: R$ " + inCash,
+                    FontFactory.getFont(FontFactory.HELVETICA, 8));
+            document.add(payCash);
+
+            Paragraph line = new Paragraph("\n");
+            document.add(line);
+
             String texto = "________________________\n"
                     + sale.getPerson().getName() + "\n"
                     + documentoPessoa;

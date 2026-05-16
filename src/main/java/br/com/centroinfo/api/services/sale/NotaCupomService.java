@@ -39,6 +39,8 @@ public class NotaCupomService {
         }
     }
 
+
+
     public byte[] gerarCupom(Sale sale) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
