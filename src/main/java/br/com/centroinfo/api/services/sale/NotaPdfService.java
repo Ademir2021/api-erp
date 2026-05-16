@@ -10,6 +10,8 @@ import br.com.centroinfo.api.entities.accountsReceivable.AccountsReceivable;
 import br.com.centroinfo.api.entities.address.address.Address;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
+import br.com.centroinfo.api.helpers.FormatHelper;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -78,9 +80,10 @@ public class NotaPdfService {
             PdfPCell e = new PdfPCell();
             e.addElement(new Paragraph(sale.getBranch().getFantasyName(), headerFont));
             e.addElement(new Paragraph(sale.getBranch().getName(), headerFont));
-            e.addElement(new Paragraph("CNPJ: " + sale.getBranch().getCnpj() + " " +
-                    "Inscrição Estadual: " + sale.getBranch().getInscricState(), normalFont));
-            e.addElement(new Paragraph("Telefone: " + sale.getBranch().getPhoneNumber(), normalFont));
+            e.addElement(new Paragraph("CNPJ: " + FormatHelper.formatCnpj(sale.getBranch().getCnpj()) + " " +
+                    "IE: " + sale.getBranch().getInscricState(), normalFont));
+            e.addElement(new Paragraph("Telefone: " + FormatHelper.formatPhone(sale.getBranch().getPhoneNumber()),
+                    normalFont));
             e.addElement(
                     new Paragraph("Endereço: " + sale.getBranch().getPerson().getAddress().getStreet() + " " +
                             sale.getBranch().getPerson().getAddress().getNumber() + " " +
@@ -123,7 +126,7 @@ public class NotaPdfService {
             cliente.addCell(cell("Cliente: ", headerFont));
             cliente.addCell(cell(sale.getPerson().getName(), normalFont));
             cliente.addCell(cell("CPF: ", headerFont));
-            cliente.addCell(cell(sale.getPerson().getCpf(), normalFont));
+            cliente.addCell(cell(FormatHelper.formatCpf(sale.getPerson().getCpf()), normalFont));
             Address a = sale.getPerson().getAddress();
             cliente.addCell(cell("Endereço: ", headerFont));
             cliente.addCell(cell(a.getStreet() + ", " + a.getNumber() + ", " +
@@ -197,8 +200,10 @@ public class NotaPdfService {
             qr.setAlignment(Element.ALIGN_RIGHT);
             document.add(qr);
             String documentoPessoa = sale.getPerson().getCpf() != null
-                    ? sale.getPerson().getCpf()
-                    : (sale.getPerson().getCnpj() != null ? sale.getPerson().getCnpj() : "");
+                    ? FormatHelper.formatCpf(sale.getPerson().getCpf())
+                    : (sale.getPerson().getCnpj() != null
+                            ? FormatHelper.formatCnpj(sale.getPerson().getCnpj())
+                            : "");
             String texto = "________________________\n"
                     + sale.getPerson().getName() + "\n"
                     + documentoPessoa;

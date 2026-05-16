@@ -22,6 +22,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.image.BufferedImage;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
+import br.com.centroinfo.api.helpers.FormatHelper;
 
 @Service
 public class NotaCupomService {
@@ -42,44 +43,46 @@ public class NotaCupomService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         int qtdItems = sale.getItemsSale().size();
-        float alt = 500f + (qtdItems * 26f);
+        float alt = 560f + (qtdItems * 26f);
         float larg = 226f;
-     
+
         try {
-            //Tamanho tipo bobina 80mm
+            // Tamanho tipo bobina 80mm
             Rectangle pageSize = new Rectangle(larg, alt);
             Document document = new Document(pageSize, 10, 10, 10, 10);
 
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            //Fontes
+            // Fontes
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
             Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
 
             NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
-            //LINE
+            // LINE
             String line = "\n";
 
             // HEADER
+            document.add(new Paragraph(line));
             Paragraph empresa = new Paragraph();
             empresa.setAlignment(Element.ALIGN_CENTER);
 
             empresa.add(new Chunk(sale.getBranch().getFantasyName() + "\n", headerFont));
-            empresa.add(new Chunk("CNPJ:" + sale.getBranch().getCnpj() +
-            " IE:" + sale.getBranch().getInscricState() + "\n", normalFont));
+            empresa.add(new Chunk("CNPJ:" + FormatHelper.formatCnpj(sale.getBranch().getCnpj()) +
+                    " IE:" + sale.getBranch().getInscricState() + "\n", normalFont));
             empresa.add(new Chunk(sale.getBranch().getPerson().getAddress().getStreet() + " "
-            + sale.getBranch().getPerson().getAddress().getNumber() + " "
-            + sale.getBranch().getPerson().getAddress().getNeighborhood() + "\n"
-            + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getName() + " "
-            + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getState().getAcronym() + "\n",
-            normalFont));
-            empresa.add(new Chunk("Tel: " + sale.getBranch().getPhoneNumber() + "\n", normalFont));
+                    + sale.getBranch().getPerson().getAddress().getNumber() + " "
+                    + sale.getBranch().getPerson().getAddress().getNeighborhood() + "\n"
+                    + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getName() + " "
+                    + sale.getBranch().getPerson().getAddress().getZipCode().getCity().getState().getAcronym() + "\n",
+                    normalFont));
+            empresa.add(new Chunk("Tel: " + FormatHelper.formatPhone(
+                    sale.getBranch().getPhoneNumber()) + "\n", normalFont));
             empresa.add(new Chunk(line));
             document.add(empresa);
 
-            //VENDA
+            // VENDA
             document.add(new Paragraph("CUPOM NÃO FISCAL", headerFont));
             document.add(new Paragraph("Venda Nº: " + String.format("%06d", sale.getId()), normalFont));
             document.add(new Paragraph(
@@ -89,18 +92,18 @@ public class NotaCupomService {
 
             document.add(new Paragraph(line));
 
-            //CLIENTE 
+            // CLIENTE
             if (sale.getPerson() != null) {
                 document.add(new Paragraph("Cliente: " + sale.getPerson().getName(), normalFont));
 
                 if (sale.getPerson().getCpf() != null) {
-                    document.add(new Paragraph("CPF: " + sale.getPerson().getCpf(), normalFont));
+                    document.add(new Paragraph("CPF: " + FormatHelper.formatCpf(sale.getPerson().getCpf()), normalFont));
                 }
             }
 
             document.add(new Paragraph(line));
 
-            //ITENS 
+            // ITENS
             for (ItemSale item : sale.getItemsSale()) {
                 BigDecimal total = item.getAmount().multiply(item.getPrice());
                 document.add(new Paragraph(item.getItem().getName(), normalFont));
@@ -120,7 +123,7 @@ public class NotaCupomService {
             total.setAlignment(Element.ALIGN_RIGHT);
             document.add(total);
 
-            //PAGAMENTO
+            // PAGAMENTO
             String IDPay = "";
             if (sale.getAccountsReceivable() != null &&
                     !sale.getAccountsReceivable().isEmpty() &&
@@ -132,7 +135,7 @@ public class NotaCupomService {
             document.add(new Paragraph("\nPagamento: " + tipoPagamento, normalFont));
             document.add(new Paragraph(line));
 
-            //QR CODE
+            // QR CODE
             Image qr = gerarQRCode("http://localhost/cupom/" + sale.getId() + "/pdf", 80, 80);
             if (qr != null) {
                 qr.setAlignment(Element.ALIGN_CENTER);
@@ -141,7 +144,7 @@ public class NotaCupomService {
 
             document.add(new Paragraph(line));
 
-            //RODAPÉ
+            // RODAPÉ
             Paragraph rodape = new Paragraph(
                     "CUPOM NÃO FISCAL\nObrigado pela preferência!",
                     normalFont);
