@@ -23,9 +23,19 @@ import java.awt.image.BufferedImage;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.helpers.FormatHelper;
+import br.com.centroinfo.api.providers.mail.EmailService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class NotaCupomService {
+
+    @Autowired
+    EmailService emailService;
+
+    @Value("${api.api-base-url}")
+    private String apiBaseUrl;
 
     private Image gerarQRCode(String text, int width, int height) {
         try {
@@ -38,8 +48,6 @@ public class NotaCupomService {
             return null;
         }
     }
-
-
 
     public byte[] gerarCupom(Sale sale) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -54,6 +62,11 @@ public class NotaCupomService {
             Document document = new Document(pageSize, 10, 10, 10, 10);
 
             PdfWriter.getInstance(document, outputStream);
+
+            // Gera em memoria para enviar por email
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+
             document.open();
 
             // Fontes
@@ -99,7 +112,8 @@ public class NotaCupomService {
                 document.add(new Paragraph("Cliente: " + sale.getPerson().getName(), normalFont));
 
                 if (sale.getPerson().getCpf() != null) {
-                    document.add(new Paragraph("CPF: " + FormatHelper.formatCpf(sale.getPerson().getCpf()), normalFont));
+                    document.add(
+                            new Paragraph("CPF: " + FormatHelper.formatCpf(sale.getPerson().getCpf()), normalFont));
                 }
             }
 
@@ -138,7 +152,7 @@ public class NotaCupomService {
             document.add(new Paragraph(line));
 
             // QR CODE
-            Image qr = gerarQRCode("http://localhost/cupom/" + sale.getId() + "/pdf", 80, 80);
+            Image qr = gerarQRCode(apiBaseUrl + "/cupom/" + sale.getId() + "/pdf", 80, 80);
             if (qr != null) {
                 qr.setAlignment(Element.ALIGN_CENTER);
                 document.add(qr);
@@ -153,7 +167,14 @@ public class NotaCupomService {
 
             rodape.setAlignment(Element.ALIGN_CENTER);
             document.add(rodape);
+
             document.close();
+
+            emailService.sendMailNote(
+                    sale,
+                    baos.toByteArray()
+            );
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Erro: " + e);

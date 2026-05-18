@@ -11,6 +11,7 @@ import br.com.centroinfo.api.entities.address.address.Address;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
 import br.com.centroinfo.api.helpers.FormatHelper;
+import br.com.centroinfo.api.providers.mail.EmailService;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -22,9 +23,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class NotaPdfService {
+
+    @Autowired
+    EmailService emailService;
+
+    @Value("${api.api-base-url}")
+    private String apiBaseUrl;
+
     private Image gerarQRCode(String text, int width, int height) {
         try {
             QRCodeWriter writer = new QRCodeWriter();
@@ -68,6 +78,11 @@ public class NotaPdfService {
 
             Document document = new Document(PageSize.A4, 30, 30, 30, 30);
             PdfWriter.getInstance(document, outputStream);
+
+            // Gera em memoria para enviar por email
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+
             document.open();
             // FONTES
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
@@ -204,7 +219,7 @@ public class NotaPdfService {
             totais.addCell(totalFinal);
             document.add(totais);
             // ================= QR =================
-            Image qr = gerarQRCode("http://localhost/nota/" + sale.getId() + "/pdf", 100, 100);
+            Image qr = gerarQRCode(apiBaseUrl + "/nota/" + sale.getId() + "/pdf", 100, 100);
             qr.setAlignment(Element.ALIGN_RIGHT);
             document.add(qr);
             String documentoPessoa = sale.getPerson().getCpf() != null
@@ -232,11 +247,18 @@ public class NotaPdfService {
             document.add(assinatura);
             // ================= RODAPÉ =================
             Paragraph rodape = new Paragraph(
-                    "Documento gerado automaticamente - pelo ERP da Empresa, em http://localhost",
+                    "Documento gerado automaticamente - pelo ERP da Empresa, em " + apiBaseUrl,
                     FontFactory.getFont(FontFactory.HELVETICA, 8));
             rodape.setAlignment(Element.ALIGN_CENTER);
             document.add(rodape);
+
             document.close();
+
+            emailService.sendMailNote(
+                    sale,
+                    baos.toByteArray()
+            );
+
         } catch (Exception e) {
             e.printStackTrace();
         }

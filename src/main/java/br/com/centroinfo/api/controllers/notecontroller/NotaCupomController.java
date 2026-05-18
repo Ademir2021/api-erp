@@ -1,6 +1,5 @@
 package br.com.centroinfo.api.controllers.notecontroller;
 
-// import java.net.http.HttpHeaders; // Remove this line
 import org.springframework.http.HttpHeaders;
 
 import org.springframework.http.HttpStatus;
