@@ -99,7 +99,7 @@ public ResponseEntity<?> register(@RequestBody @Validated RegisterDTO authentica
 
     @PutMapping("/register")
     public ResponseEntity<?> update(@RequestBody @Validated UpdateUserDTO updateUserDTO) {
-        if (this.repository.findByLogin(updateUserDTO.getLogin()) != null)
+        if (this.repository.findByLogin(updateUserDTO.getLogin()) == null)
             return ResponseEntity.badRequest().build();
         String encryptedPassword = new BCryptPasswordEncoder().encode(updateUserDTO.getPassword());
         User newUser = new User(updateUserDTO.getId(), updateUserDTO.getLogin(), encryptedPassword,
@@ -107,6 +107,8 @@ public ResponseEntity<?> register(@RequestBody @Validated RegisterDTO authentica
         this.repository.save(newUser);
         return ResponseEntity.ok().build();
     }
+
+   
 
     @DeleteMapping("/register/{id}")
     public List<User> delete(@PathVariable("id") Long id) {
