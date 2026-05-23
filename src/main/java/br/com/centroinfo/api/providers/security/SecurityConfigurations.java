@@ -29,6 +29,7 @@ public class SecurityConfigurations {
                         // Obs.: Pemite requisições do tipo items/search_name?name=mouse
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/auth/register").hasAnyRole("USER")
                         .requestMatchers(HttpMethod.GET, "/auth/users").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/brand").hasRole("ADMIN")
