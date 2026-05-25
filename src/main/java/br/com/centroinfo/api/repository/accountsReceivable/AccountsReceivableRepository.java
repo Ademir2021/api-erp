@@ -15,7 +15,7 @@ public interface AccountsReceivableRepository extends JpaRepository<AccountsRece
             SELECT new br.com.centroinfo.api.dtos.accountsReceivableDTO.AccountsReceivableResponseDTO(
             ar.id, ar.createdAt, ar.updatedAt,
             b.id, b.name, u.id, u.login, p.id, p.name, s.id,
-            ar.value, ar.receivedValue, ar.balance, ar.dueDate, ar.description, ar.situation,
+            ar.value, ar.receivedValue, ar.balance, ar.dueDate, ar.cancel, ar.description, ar.situation,
             ar.observations, ar.lateFee, ar.interest, ar.discount, ar.type,
             ar.idTypeOperation, ar.descriptionTypeOperation )
             FROM AccountsReceivable ar
@@ -35,4 +35,9 @@ public interface AccountsReceivableRepository extends JpaRepository<AccountsRece
     @Query(ACCOUNTS_RECEIVABLE_RESPONSE + " WHERE (:userId IS NULL OR u.id = :userId)")
     List<AccountsReceivableResponseDTO> findAllAccountsReceivableByUser(
             @Param("userId") Long userId);
+
+          @Query("SELECT ar FROM AccountsReceivable ar " +
+       " WHERE (:saleId IS NULL OR ar.sale.id = :saleId)")
+List<AccountsReceivable> findBySaleId(
+        @Param("saleId") Long saleId);
 }

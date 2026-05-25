@@ -22,6 +22,7 @@ public class AccountsReceivableResponseDTO {
     private BigDecimal receivedValue;
     private BigDecimal balance;
     private LocalDateTime dueDate;
+    private Boolean cancel;
     private String description;
     private SituationAccountsReceivable situation;
     private String observations;
@@ -36,7 +37,7 @@ public class AccountsReceivableResponseDTO {
             Long id, LocalDateTime createdAt, LocalDateTime updatedAt,
             Long iB, String nB, Long iU, String nU, Long iP, String nP,
             Long iS, BigDecimal value, BigDecimal receivedValue, BigDecimal balance,
-            LocalDateTime dueDate, String description, SituationAccountsReceivable situation,
+            LocalDateTime dueDate, Boolean cancel, String description, SituationAccountsReceivable situation,
             String observations, BigDecimal lateFee, BigDecimal interest, BigDecimal discount,
             PaymentAccountsReceivable type, String idTypeOperation, String descriptionTypeOperation) {
         this.id = id;
@@ -50,6 +51,7 @@ public class AccountsReceivableResponseDTO {
         this.receivedValue = receivedValue;
         this.balance = balance;
         this.dueDate = dueDate;
+        this.cancel = cancel;
         this.description = description;
         this.situation = situation;
         this.observations = observations;

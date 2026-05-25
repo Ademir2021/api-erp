@@ -46,6 +46,7 @@ public class AccountsReceivable {
     private BigDecimal receivedValue;
     private BigDecimal balance;
     private LocalDateTime dueDate;
+    private Boolean cancel;
     private String description;
     @Enumerated(EnumType.STRING)
     private SituationAccountsReceivable situation;

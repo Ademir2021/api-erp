@@ -30,7 +30,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
                     s.totalSale,
                     s.discount,
-                    s.totalNote
+                    s.totalNote,
+                    s.cancel
                 )
                 FROM Sale s
                 JOIN s.branch b

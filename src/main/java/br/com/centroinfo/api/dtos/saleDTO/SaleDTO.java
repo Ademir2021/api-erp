@@ -14,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SaleDTO {
+    private Long id;
     private Branch branch;
     private User user;
     private Person person;

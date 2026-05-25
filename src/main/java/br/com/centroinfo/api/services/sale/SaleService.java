@@ -8,6 +8,7 @@ import br.com.centroinfo.api.entities.cashMovement.CashMovement;
 import br.com.centroinfo.api.entities.cashMovement.MovementType;
 import br.com.centroinfo.api.entities.sales.ItemSale;
 import br.com.centroinfo.api.entities.sales.Sale;
+import br.com.centroinfo.api.repository.accountsReceivable.AccountsReceivableRepository;
 import br.com.centroinfo.api.repository.cashMovement.CashMovementRepository;
 import br.com.centroinfo.api.repository.sale.SaleRepository;
 import br.com.centroinfo.api.services.cashMovement.CashMovementService;
@@ -38,6 +39,9 @@ public class SaleService {
         @Autowired
         private CashMovementService cashMovementService;
 
+        @Autowired
+        private AccountsReceivableRepository accountsReceivableRepository;
+
         public Sale createSale(SaleDTO saleDTO) {
 
                 BigDecimal totalSale = BigDecimal.ZERO;
@@ -51,6 +55,7 @@ public class SaleService {
                 sale.setDiscount(saleDTO.getDiscount());
                 sale.setBranch(saleDTO.getBranch());
                 sale.setUser(saleDTO.getUser());
+                sale.setCancel(false);
 
                 List<ItemSale> itemList = new ArrayList<>();
                 for (ItemSaleDTO itemDTO : saleDTO.getItemsSale()) {
@@ -89,6 +94,7 @@ public class SaleService {
                                         accountsReceivable.setBalance(accountsReceivableDTO.getValue());
                                         accountsReceivable.setReceivedValue(accountsReceivableDTO.getReceivedValue());
                                         accountsReceivable.setCreatedAt(LocalDateTime.now());
+                                        accountsReceivable.setCancel(false);
                                         accountsReceivableList.add(accountsReceivable);
                                 });
 
@@ -128,6 +134,52 @@ public class SaleService {
                                 cashRepository.save(movement);
                         }
                 }
+
+                return saleRepository.save(sale);
+        }
+
+        @Transactional
+        public Sale cancelSale(SaleDTO saleDTO) {
+
+                Sale sale = saleRepository.findById(saleDTO.getId())
+                                .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
+
+                // Evita cancelar duas vezes
+                if (Boolean.TRUE.equals(sale.getCancel())) {
+                        throw new RuntimeException("Venda já cancelada");
+                }
+
+                // Buscar contas da venda
+                List<AccountsReceivable> accounts = accountsReceivableRepository.findBySaleId(sale.getId());
+
+                // Somar contas a receber
+                BigDecimal totalAccounts = accounts.stream()
+                                .map(AccountsReceivable::getValue)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                // Cancelar contas
+                accounts.forEach(account -> {
+                        account.setCancel(true);
+                });
+
+                accountsReceivableRepository.saveAll(accounts);
+
+                // Cancelar venda
+                sale.setCancel(true);
+
+                // Movimento de caixa
+                BigDecimal totalMovement = sale.getTotalNote().subtract(totalAccounts);
+                CashMovement movement = new CashMovement();
+                movement.setAmount(totalMovement);
+                movement.setMovementType(MovementType.DEBIT);
+                movement.setDescription(
+                                "Cancelamento da Venda: " + sale.getId());
+                movement.setAccountsReceivable(null);
+                // DEBIT diminui saldo
+                movement.setBalanceAfter(
+                                cashMovementService.getSaldoCaixa()
+                                                .subtract(totalMovement));
+                cashRepository.save(movement);
 
                 return saleRepository.save(sale);
         }

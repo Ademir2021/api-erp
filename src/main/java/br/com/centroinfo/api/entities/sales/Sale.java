@@ -49,6 +49,7 @@ public class Sale {
     private BigDecimal discount;
     @Column(name = "total_note")
     private BigDecimal totalNote;
+    private Boolean cancel;
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<ItemSale> itemsSale;
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)

@@ -21,6 +21,7 @@ public class SaleResponseDTO {
     private BigDecimal totalSale;
     private BigDecimal discount;
     private BigDecimal totalNote;
+    private Boolean cancel;
 
     public SaleResponseDTO(
             Long id,
@@ -41,7 +42,8 @@ public class SaleResponseDTO {
 
             BigDecimal totalSale,
             BigDecimal discount,
-            BigDecimal totalNote
+            BigDecimal totalNote,
+            Boolean cancel
     ) {
         this.id = id;
         this.issueDate = issueDate;
@@ -54,6 +56,7 @@ public class SaleResponseDTO {
         this.totalSale = totalSale;
         this.discount = discount;
         this.totalNote = totalNote;
+        this.cancel = cancel;
     }
 
     private final record BranchResponseDTO(Long id, String name) {}
