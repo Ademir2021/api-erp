@@ -140,33 +140,25 @@ public class SaleService {
 
         @Transactional
         public Sale cancelSale(SaleDTO saleDTO) {
-
                 Sale sale = saleRepository.findById(saleDTO.getId())
                                 .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
-
                 // Evita cancelar duas vezes
                 if (Boolean.TRUE.equals(sale.getCancel())) {
                         throw new RuntimeException("Venda já cancelada");
                 }
-
                 // Buscar contas da venda
                 List<AccountsReceivable> accounts = accountsReceivableRepository.findBySaleId(sale.getId());
-
                 // Somar contas a receber
                 BigDecimal totalAccounts = accounts.stream()
                                 .map(AccountsReceivable::getValue)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
                 // Cancelar contas
                 accounts.forEach(account -> {
                         account.setCancel(true);
                 });
-
                 accountsReceivableRepository.saveAll(accounts);
-
                 // Cancelar venda
                 sale.setCancel(true);
-
                 // Movimento de caixa
                 BigDecimal totalMovement = sale.getTotalNote().subtract(totalAccounts);
                 CashMovement movement = new CashMovement();
@@ -180,7 +172,6 @@ public class SaleService {
                                 cashMovementService.getSaldoCaixa()
                                                 .subtract(totalMovement));
                 cashRepository.save(movement);
-
                 return saleRepository.save(sale);
         }
 
