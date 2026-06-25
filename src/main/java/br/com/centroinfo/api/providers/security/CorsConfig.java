@@ -16,7 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/**") // ou apenas "/auth/**"
                         .allowedOriginPatterns(
                                 "http://localhost:3000",
-                                "http://192.168.80.*:3000") // frontend dev
+                                "http://192.168.80.100:3000") // frontend dev
                         .allowCredentials(true)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
