@@ -161,3 +161,11 @@ POST /auth/login - Login into the App
 POST /auth/register - Register new users for next acess.
 
 POST /store/sales - Register of Sales.
+
+Dúvidas e Suporte
+
+Em caso de dúvidas, sugestões ou necessidade de suporte relacionadas ao projeto, entre em contato pelo e-mail:
+
+📧 centroserra@gmail.com
+
+Ao entrar em contato, sempre que possível, informe o assunto, a funcionalidade envolvida e uma descrição detalhada da dúvida ou problema.
