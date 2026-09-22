@@ -5,32 +5,35 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.centroinfo.api.dtos.itemsImagesDTO.ItemImageDTO;
-import br.com.centroinfo.api.repository.itemsImages.ItemsImagesRepository;
+import br.com.centroinfo.api.services.itemsImagesService.ItemImageService;
 
 @RestController
 @RequestMapping("")
 public class ItemsImagesController {
 
-@Autowired
-ItemsImagesRepository itemsImagesRepository;
+    @Autowired
+    ItemImageService itemImageService;
 
-@GetMapping("/images")
-public ResponseEntity<List<ItemImageDTO>> getImages() {
+    @GetMapping("/images/item/{itemId}")
+    public ResponseEntity<List<ItemImageDTO>> getImagesByItem(
+            @PathVariable Long itemId) {
 
-    List<ItemImageDTO> images = itemsImagesRepository.findAll()
-        .stream()
-        .map(image -> new ItemImageDTO(
-            image.getId(),
-            image.getFileName(),
-            image.getFilePath(),
-            image.getItem().getId()
-        ))
-        .toList();
+        return ResponseEntity.ok(
+                itemImageService.findByItemId(itemId)
+        );
+    }
 
-    return ResponseEntity.ok(images);
-}
+    @GetMapping("/images")
+    public ResponseEntity<List<ItemImageDTO>> getImages() {
+
+        return ResponseEntity.ok(
+                itemImageService.findAll()
+        );
+    }
+
 }
