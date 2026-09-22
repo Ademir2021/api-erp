@@ -81,6 +81,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/group_persons").permitAll()
                         .requestMatchers(HttpMethod.GET, "/cash/list").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/cash").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/images").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

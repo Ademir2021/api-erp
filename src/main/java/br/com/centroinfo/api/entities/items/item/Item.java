@@ -1,13 +1,19 @@
 package br.com.centroinfo.api.entities.items.item;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.centroinfo.api.entities.items.brand.Brand;
+import br.com.centroinfo.api.entities.items.images.ItemsImages;
 import br.com.centroinfo.api.entities.items.itemClass.ItemClass;
 import br.com.centroinfo.api.entities.items.subGroup.SubGroup;
 import br.com.centroinfo.api.entities.items.taxGroup.TaxGroup;
 import br.com.centroinfo.api.entities.items.typeItem.TypeItem;
 import br.com.centroinfo.api.entities.items.unitMeasure.UnitMeasure;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,4 +64,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "unit_measure_id")
     private UnitMeasure unitMeasure;
+    @OneToMany(
+    mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ItemsImages> images = new ArrayList<>();
 }

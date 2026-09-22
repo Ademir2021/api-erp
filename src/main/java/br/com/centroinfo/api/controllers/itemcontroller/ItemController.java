@@ -1,13 +1,10 @@
 package br.com.centroinfo.api.controllers.itemcontroller;
 
-import br.com.centroinfo.api.dtos.itemDTO.ItemDTO;
-import br.com.centroinfo.api.entities.items.item.Item;
-import br.com.centroinfo.api.services.item.ItemService;
-
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import br.com.centroinfo.api.dtos.itemDTO.ItemDTO;
+import br.com.centroinfo.api.entities.items.item.Item;
+import br.com.centroinfo.api.services.item.ItemService;
 
 @RestController
 @RequestMapping("")
@@ -26,21 +29,53 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
-    @PostMapping("/item")
-    public ResponseEntity<?> create(@RequestBody ItemDTO itemDTO) {
-        try {
-           Item item = itemService.create(itemDTO);
-            return ResponseEntity.ok().body(Map.of(
-                    "message", "Item Registrado com sucesso",
-                    "name", item.getName()));
+    // @PostMapping(
+    //         consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    // )
+    // public ResponseEntity<Item> create(
+    //         @RequestPart("item") ItemDTO itemDTO,
+    //         @RequestPart(value = "images", required = false) List<MultipartFile> images
+    // ) {
+    //     Item item = itemService.create(itemDTO, images);
+    //     return ResponseEntity.ok(item);
+    // }
 
+    @PostMapping(value = "/item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> create(
+            @RequestPart("item") ItemDTO itemDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        try {
+            Item item = itemService.create(itemDTO, images);
+            return ResponseEntity.ok(
+                    Map.of(
+                            "message", "Item registrado com sucesso",
+                            "name", item.getName()
+                    )
+            );
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Erro ao Registrar Item",
-                    "details", e.getMessage()));
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(
+                    Map.of(
+                            "error", "Erro ao registrar item",
+                            "details", e.getMessage()
+                    )
+            );
         }
     }
 
+    // @PostMapping("/item")
+    // public ResponseEntity<?> create(@RequestBody ItemDTO itemDTO) {
+    //     try {
+    //         Item item = itemService.create(itemDTO);
+    //         return ResponseEntity.ok().body(Map.of(
+    //                 "message", "Item Registrado com sucesso",
+    //                 "name", item.getName()));
+    //     } catch (Exception e) {
+    //         return ResponseEntity.badRequest().body(Map.of(
+    //                 "error", "Erro ao Registrar Item",
+    //                 "details", e.getMessage()));
+    //     }
+    // }
     @GetMapping("/items")
     public List<Item> list() {
         return itemService.list();

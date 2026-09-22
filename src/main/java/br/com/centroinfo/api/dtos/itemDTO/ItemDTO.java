@@ -1,6 +1,7 @@
 package br.com.centroinfo.api.dtos.itemDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import br.com.centroinfo.api.entities.items.brand.Brand;
 import br.com.centroinfo.api.entities.items.itemClass.ItemClass;
@@ -28,4 +29,5 @@ public class ItemDTO {
   private TypeItem typeItem;
   private ItemClass itemClass;
   private UnitMeasure unitMeasure;
+  private List<String> images;
 }
