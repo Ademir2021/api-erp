@@ -55,9 +55,7 @@ public class ItemService {
                 ItemsImages itemImage = new ItemsImages();
                 itemImage.setFileName(image.getOriginalFilename());
                 /// depois definimos o caminho onde será salva
-                itemImage.setFilePath(
-                        "/imgs/items/" + image.getOriginalFilename()
-                );
+                itemImage.setFilePath("/imgs/items/");
                 itemImage.setItem(item);
                 item.getImages().add(itemImage);
             }
