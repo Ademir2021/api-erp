@@ -13,6 +13,7 @@ import br.com.centroinfo.api.dtos.itemDTO.ItemDTO;
 import br.com.centroinfo.api.entities.items.images.ItemsImages;
 import br.com.centroinfo.api.entities.items.item.Item;
 import br.com.centroinfo.api.repository.item.ItemRepository;
+import br.com.centroinfo.api.services.itemsImagesService.ItemImageService;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -22,11 +23,14 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired 
+    private ItemImageService itemImageService;
+
     /**
      * @param item
      * @param itemDTO
      */
-    private void mapItemFields(Item item, ItemDTO itemDTO ) {
+    private void mapItemFields(Item item, ItemDTO itemDTO) {
         item.setName(itemDTO.getName());
         item.setPriceMax(itemDTO.getPriceMax());
         item.setPriceMin(itemDTO.getPriceMin());
@@ -41,23 +45,23 @@ public class ItemService {
     }
 
     public Item create(ItemDTO itemDTO, List<MultipartFile> images) {
-    
+
         Item item = new Item();
         item.setCreatedAt(LocalDateTime.now());
         mapItemFields(item, itemDTO);
 
         if (images != null && !images.isEmpty()) {
-        for (MultipartFile image : images) {
-            ItemsImages itemImage = new ItemsImages();
-            itemImage.setFileName(image.getOriginalFilename());
-            // depois definimos o caminho onde será salva
-            itemImage.setFilePath(
-                "/imgs/items/" + image.getOriginalFilename()
-            );
-            itemImage.setItem(item);
-            item.getImages().add(itemImage);
+            for (MultipartFile image : images) {
+                ItemsImages itemImage = new ItemsImages();
+                itemImage.setFileName(image.getOriginalFilename());
+                /// depois definimos o caminho onde será salva
+                itemImage.setFilePath(
+                        "/imgs/items/" + image.getOriginalFilename()
+                );
+                itemImage.setItem(item);
+                item.getImages().add(itemImage);
+            }
         }
-    }
         return itemRepository.save(item);
     }
 
@@ -65,21 +69,13 @@ public class ItemService {
         return itemRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 
-    // Método para buscar itens por nome ou codigo de barras
-    // public List<Item> searchItems(String name) {
-    // if (name != null && !name.isEmpty()) {
-    // return itemRepository.searchByNameOrBarcode(name);
-    // }
-    // return list();
-    // }
-
-     // Método para buscar itens por nome, codigo de barras ou id
+// Método para buscar itens por nome, codigo de barras ou id
     public List<Item> searchItems(String term) {
         if (term == null || term.trim().isEmpty()) {
             return List.of();
         };
         term = term.trim();
-        // Se for número, tenta buscar por ID também
+// Se for número, tenta buscar por ID também
         if (term.matches("\\d+")) {
             Long id = Long.valueOf(term);
             List<Item> result = new ArrayList<>();
@@ -90,14 +86,28 @@ public class ItemService {
         return itemRepository.searchByNameOrBarcode(term);
     }
 
-    public Item update(ItemDTO itemDTO) {
-        Item item = new Item();
-        item.setId(itemDTO.getId());
-        item.setCreatedAt(itemDTO.getCreatedAt());
-        item.setUpdatedAt(LocalDateTime.now());
-        mapItemFields(item, itemDTO);
-        return itemRepository.save(item);
+@Transactional
+public Item update(ItemDTO itemDTO, List<MultipartFile> images) {
+
+    Item item = itemRepository.findById(itemDTO.getId())
+            .orElseThrow(() ->
+                    new RuntimeException(
+                            "Item não encontrado: " + itemDTO.getId()
+                    )
+            );
+
+    item.setCreatedAt(item.getCreatedAt());
+    item.setUpdatedAt(LocalDateTime.now());
+    mapItemFields(item, itemDTO);
+    Item updatedItem = itemRepository.save(item);
+
+    // Atualiza as imagens
+    if (images != null && !images.isEmpty()) {
+        itemImageService.updateImages(item, images);
     }
+
+    return updatedItem;
+}
 
     public List<Item> delete(Long id) {
         itemRepository.deleteById(id);

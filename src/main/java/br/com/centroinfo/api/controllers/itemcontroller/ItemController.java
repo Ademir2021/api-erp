@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -29,17 +28,6 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
-    // @PostMapping(
-    //         consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    // )
-    // public ResponseEntity<Item> create(
-    //         @RequestPart("item") ItemDTO itemDTO,
-    //         @RequestPart(value = "images", required = false) List<MultipartFile> images
-    // ) {
-    //     Item item = itemService.create(itemDTO, images);
-    //     return ResponseEntity.ok(item);
-    // }
-
     @PostMapping(value = "/item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, Object>> create(
             @RequestPart("item") ItemDTO itemDTO,
@@ -49,33 +37,16 @@ public class ItemController {
             return ResponseEntity.ok(
                     Map.of(
                             "message", "Item registrado com sucesso",
-                            "name", item.getName()
-                    )
-            );
+                            "name", item.getName()));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(
                     Map.of(
                             "error", "Erro ao registrar item",
-                            "details", e.getMessage()
-                    )
-            );
+                            "details", e.getMessage()));
         }
     }
 
-    // @PostMapping("/item")
-    // public ResponseEntity<?> create(@RequestBody ItemDTO itemDTO) {
-    //     try {
-    //         Item item = itemService.create(itemDTO);
-    //         return ResponseEntity.ok().body(Map.of(
-    //                 "message", "Item Registrado com sucesso",
-    //                 "name", item.getName()));
-    //     } catch (Exception e) {
-    //         return ResponseEntity.badRequest().body(Map.of(
-    //                 "error", "Erro ao Registrar Item",
-    //                 "details", e.getMessage()));
-    //     }
-    // }
     @GetMapping("/items")
     public List<Item> list() {
         return itemService.list();
@@ -87,20 +58,25 @@ public class ItemController {
         return itemService.searchItems(name);
     }
 
-    @PutMapping("/item/{id}")
-    public ResponseEntity<?> update(
+    @PutMapping(value = "/item/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> update(
             @PathVariable Long id,
-            @RequestBody ItemDTO itemDTO) {
-        itemDTO.setId(id);
+            @RequestPart("item") ItemDTO itemDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         try {
-            Item item = itemService.update(itemDTO);
-            return ResponseEntity.ok().body(Map.of(
-                    "message", "Item atualizado com sucesso",
-                    "id", item.getId()));
+            itemDTO.setId(id);
+            Item item = itemService.update(itemDTO, images);
+            return ResponseEntity.ok(
+                    Map.of(
+                            "message", "Item atualizado com sucesso",
+                            "id", item.getId(),
+                            "name", item.getName()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Erro ao atualizar Item",
-                    "details", e.getMessage()));
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(
+                    Map.of(
+                            "error", "Erro ao atualizar item",
+                            "details", e.getMessage()));
         }
     }
 
