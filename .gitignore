@@ -38,3 +38,5 @@ git_push.sh
 note.MD
 
 .env
+
+/imgs/items/*
