@@ -51,32 +51,6 @@ public class ItemImageService {
                 .toList();
     };
 
-    // public void updateImages(
-    // Item item,
-    // List<MultipartFile> images) {
-    // if (images == null || images.isEmpty()) {
-    // return;
-    // }
-    // for (MultipartFile file : images) {
-    // if (file == null || file.isEmpty()) {
-    // continue;
-    // }
-    // try {
-    // String originalFileName = file.getOriginalFilename();
-    // Path directory = Paths.get("imgs", "items");
-    // Files.createDirectories(directory);
-    // ItemsImages image = new ItemsImages();
-    // image.setFileName(originalFileName);
-    // image.setFilePath("/imgs/items/");
-    // image.setItem(item);
-    // itemsImagesRepository.save(image);
-    // } catch (IOException e) {
-    // throw new RuntimeException(
-    // "Erro ao salvar imagem do item", e);
-    // }
-    // }
-    // }
-
     public void updateImages(
             Item item,
             List<MultipartFile> images) {
