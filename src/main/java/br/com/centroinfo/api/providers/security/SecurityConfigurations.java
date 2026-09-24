@@ -11,8 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -82,6 +82,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/cash/list").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/cash").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/images").permitAll()
+                        .requestMatchers("/imgs/items/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
