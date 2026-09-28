@@ -16,4 +16,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
      @Query("SELECT i FROM Item i WHERE i.id = :id")
      List<Item> searchById(@Param("id") Long id);
+
+     @Query("SELECT COALESCE(MAX(i.id), 0) + 1 FROM Item i")
+     Long findNextId();
+
 }

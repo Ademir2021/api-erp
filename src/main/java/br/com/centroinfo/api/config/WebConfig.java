@@ -10,19 +10,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     @Value("${app.images-path:./imgs/items}")
     private String imagesPath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
         Path path = Paths.get(imagesPath)
                 .toAbsolutePath()
                 .normalize();
-
-        System.out.println("Pasta de imagens: " + path);
-
+        // System.out.println("Pasta de imagens: " + path);
         registry
                 .addResourceHandler("/imgs/items/**")
                 .addResourceLocations(path.toUri().toString());
