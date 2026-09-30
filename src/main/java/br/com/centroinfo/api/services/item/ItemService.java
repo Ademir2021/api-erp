@@ -49,7 +49,12 @@ public class ItemService {
         item.setItemClass(itemDTO.getItemClass());
         item.setUnitMeasure(itemDTO.getUnitMeasure());
     }
-
+    
+    /**
+     * @param itemDTO
+     * @param images
+     * @return
+     */
     public Item create(ItemDTO itemDTO, List<MultipartFile> images) {
         Item item = new Item();
         item.setCreatedAt(LocalDateTime.now());
