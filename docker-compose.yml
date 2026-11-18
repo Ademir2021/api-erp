@@ -1,0 +1,46 @@
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_db_dev
+
+    environment:
+      POSTGRES_DB: sales_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASS}
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    image: eclipse-temurin:21-jdk-jammy
+    container_name: springboot_api_dev
+
+    env_file:
+      - .env
+
+    depends_on:
+      - postgres
+
+    volumes:
+      - ./target/api-0.0.1-SNAPSHOT.jar:/app/app.jar
+      - ./imgs/items:${APP_IMAGES_PATH}
+
+    working_dir: /app
+
+    command: ["java", "-jar", "app.jar"]
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sales_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+      APP_IMAGES_PATH: ${APP_IMAGES_PATH}
+
+volumes:
+  pgdata:
