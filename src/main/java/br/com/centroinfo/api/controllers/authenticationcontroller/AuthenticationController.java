@@ -106,9 +106,7 @@ public ResponseEntity<?> register(@RequestBody @Validated RegisterDTO authentica
                 updateUserDTO.getRole());
         this.repository.save(newUser);
         return ResponseEntity.ok().build();
-    }
-
-   
+    } 
 
     @DeleteMapping("/register/{id}")
     public List<User> delete(@PathVariable("id") Long id) {

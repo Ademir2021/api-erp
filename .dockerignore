@@ -1,2 +1,8 @@
 README.md
 git_push.sh
+.git
+.gitignore
+.idea
+.vscode
+*.iml
+logs

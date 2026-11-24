@@ -82,6 +82,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/cash/list").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/cash").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/images").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/item/image/**").hasRole("ADMIN")
                         .requestMatchers("/imgs/items/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

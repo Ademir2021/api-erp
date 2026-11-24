@@ -8,6 +8,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,4 +98,38 @@ public class ItemImageService {
                     "Erro ao salvar imagem do item", e);
         }
     }
+
+    // Deletar Images
+    @Value ("${app.images-path}")
+    private String imagesPath;
+
+    public void deleteImage(Long id) {
+
+        // Buscar imagem no banco
+        ItemsImages image = itemsImagesRepository.findById(id)
+            .orElseThrow(() ->
+                new RuntimeException("Imagem não encontrada")
+            );
+
+        // Caminho físico da imagem
+        Path path = Paths.get(
+            imagesPath,
+            image.getItem().getId().toString(),
+            image.getFileName()
+        );
+
+        try {
+            // Excluir arquivo físico
+            Files.deleteIfExists(path);
+
+            // Excluir registro do banco
+            itemsImagesRepository.delete(image);
+
+        } catch (IOException e) {
+            throw new RuntimeException(
+                "Erro ao excluir imagem: " + e.getMessage()
+            );
+        }
+    }
+
 }

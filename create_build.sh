@@ -10,9 +10,17 @@ LOG_DIR="$DEST_DIR/logs"
 
 echo "🚀 Iniciando deploy..."
 
-echo "🔨 Buildando projeto..."
-./mvnw clean package
+# echo "🔨 Buildando projeto..."
+# ./mvnw clean package
 
+echo "Buildando novo Projeto com docker"
+
+docker run --rm \
+  -v "$(pwd)":/app \
+  -w /app \
+  maven:3.9.9-eclipse-temurin-17 \
+  mvn clean package -DskipTests
+  
 echo "📁 Criando diretórios..."
 mkdir -p $TARGET_DIR
 mkdir -p $LOG_DIR
